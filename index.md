@@ -6,30 +6,21 @@ As of right now, you will have to build from source, but after the first release
 LLVM 14 must be installed in order to build.
 
 ### Hello, World!
-Cobalt doesn't have a standard library, or even proper FFI at this point. Therefore, a "Hello, World!" program can't be directly generated. Here's how you do it:
-- Create a file called `test.co`, and write this to it:
-  ```
-  fn puts(str: i8 const*): null;
-  fn main(): i32 = {
-    puts("Hello, World!");
-    0
-  };
-  ```
-- Compile it with `co aot test.co --emit-llvm -p none`. If optimizations are enabled, the call to `puts` gets optimized out.
-- Next, open `test.ll`. Replace:
-  ```
-  define void @puts(i8* %0) {
-  entry:
-    ret void
-  }
-  ```
-  with:
-  ```
-  declare void @puts(i8* %0)
-  ```
-  - This prevents LLVM from overriding the definition of `puts` in the standard library.
-- Finally, compile and link it with `clang test.ll -o test`. You now have a "Hello, World!" program.
-
+Cobalt doesn't have a standard library at this point, so you have to make a call to a libc function.
+```
+@extern(C) fn puts(str: i8 const*): null;
+@cconv(C) fn main(): i32 = (puts("Hello, World!"); 0);
+```
+In this example, the `puts` function is declared, and then the `main` function calls it. They need to have the calling convention specified because by default, Cobalt uses LLVM's `fast` calling convetion.
+`co`' s built-in invocation of `ld` isn't able to link the CRT library, so you need to use a C compiler to link it:
+```
+co aot helloworld.co --emit-obj
+cc helloworld.o -o helloworld
+```
+Alternatively, you can do it as a one-liner:
+```
+co aot helloworld.co --emit-asm -o - | cc -x assembler - -o helloworld
+```
 ## Additional links
 - [language documentation](./language)
 - [compiler documentation](./compiler)
