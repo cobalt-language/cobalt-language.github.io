@@ -23,5 +23,5 @@ co aot helloworld.co --emit-asm -o - | cc -x assembler - -o helloworld
 ```
 ## Additional links
 - [language documentation](./language)
-- [compiler documentation](./compiler)
+- [driver documentation](./driver)
 - [implementation status](./status)
