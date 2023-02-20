@@ -24,6 +24,7 @@ The following outputs can be generated:
 - `--emit-obj`- native object file
 - `--emit-llvm`- LLVM IR
 - `--emit-bc`- LLVM bitcode
+- `--header`- Library header
 ### Optimization profiles
 Optimization profiles can be specified with the `-p` flag.
 Profiles are searched for in the following order:
@@ -86,3 +87,13 @@ Usage:
 ```bash
 $ co llvm test.co
 ```
+### `co read-lib`- read library header
+This loads files from each of its arguments as library headers and prints the symbols.
+Note that `-` *cannot* be used here to read from stdin. Use `/dev/stdin` if you really need to do so.
+Usage:
+```bash
+$ co aot --header test.co
+$ co read-lib test.coh
+```
+### `co lib-header`- generate library header
+This is deprecated in favor of `co aot --header`
