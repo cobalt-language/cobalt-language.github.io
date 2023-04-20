@@ -34,10 +34,10 @@ Profiles are searched for in the following order:
 - `/usr/local/share/cobalt/profiles/`
 - `/usr/share/cobalt/profiles/`
 - If the profile can't be located in any of these paths, the following built-in profiles are available:
-  - `none`
-  - `less`
-  - `default`
-  - `aggressive`
+  - `none` / `0`
+  - `less` / `1`
+  - `default` / `2`
+  - `aggressive` / `3`
 #### Profile file syntax
 Each line has a pass, with an optional additional argument (only used in two passes). Empty lines are ignored, and anything after a `#` is a comment.
 Example:
@@ -87,7 +87,7 @@ Usage:
 ```bash
 $ co llvm test.co
 ```
-### `co read-lib`- read library header
+### `co parse-header`- read library header
 This loads files from each of its arguments as library headers and prints the symbols.
 Note that `-` *cannot* be used here to read from stdin. Use `/dev/stdin` if you really need to do so.
 Usage:
@@ -95,5 +95,3 @@ Usage:
 $ co aot --header test.co
 $ co read-lib test.coh
 ```
-### `co lib-header`- generate library header
-This is deprecated in favor of `co aot --header`
