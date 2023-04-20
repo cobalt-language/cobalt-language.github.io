@@ -25,6 +25,7 @@ The following outputs can be generated:
 - `--emit-llvm`- LLVM IR
 - `--emit-bc`- LLVM bitcode
 - `--header`- Library header
+
 ### Optimization profiles
 Optimization profiles can be specified with the `-p` flag.
 Profiles are searched for in the following order:
@@ -38,6 +39,7 @@ Profiles are searched for in the following order:
   - `less` / `1`
   - `default` / `2`
   - `aggressive` / `3`
+
 #### Profile file syntax
 Each line has a pass, with an optional additional argument (only used in two passes). Empty lines are ignored, and anything after a `#` is a comment.
 Example:
@@ -47,15 +49,20 @@ IPSCCP # This is the same as the previous one
 scalar-repl-aggregates = 5 # both the pass and the value are trimmed
 internalize = true
 ```
+
 ### Linking libraries
 Libraries can be linked with the `-l` flag, and the (recursive) search directory is specified with `-L`
 Usage:
 ```
-$ co aot test.co -L /usr/lib -l c -l m # link libc and libm, both of which are somewhere in /usr/lib
-$ co aot test.co -Lll /usr/lib c m # because of the way flags are parsed, you can do this
+$ co aot test.co -l pthread # link libc and libm, both of which are somewhere in /usr/lib
 ```
+
+### Additional headers
+Additional library headers can be specified with the `-h` flag. In most cases, this is not as useful since there is little reason to have a header by itself.
+
 ### Continuing after errors
 By default, compilation exits early if errors are detected. Compilation can be forced to continue with the `-c` or `--continue` flag.
+
 ## `co jit`- JIT compilation
 `co jit` JIT compiles a file.
 Usage:
@@ -63,10 +70,13 @@ Usage:
 $ co jit <file>
 ```
 Profiles and libraries are specified the same way as they are with the `aot` subcommand.
+
 ## `co check`- Code verification
-`co check` goes through the frontend stages of compilation, but does not emit a compiled output. It only takes a file as an input.
+`co check` goes through the frontend stages of compilation, but does not emit a compiled output. It takes most of the same commands as `co jit`.
+
 ## Debug-only subcommands
 The following commands are only available on debug builds:
+
 ### `co lex`- print generated tokens
 Usage:
 ```bash
@@ -74,6 +84,7 @@ $ co lex test1.co test2.co
 $ co lex -l test.co # prints token locations
 $ co lex -c 'let x = 10;'
 ```
+
 ### `co parse`- print generated AST
 This is used the same as the `lex` subcommand.
 Usage:
@@ -82,16 +93,18 @@ $ co parse test1.co test2.co
 $ co parse -l test.co # prints location of each AST node
 $ co parse -c 'let x = 10;'
 ```
+
 ### `co llvm`- print unoptimized LLVM output
 Usage:
 ```bash
 $ co llvm test.co
 ```
+
 ### `co parse-header`- read library header
 This loads files from each of its arguments as library headers and prints the symbols.
 Note that `-` *cannot* be used here to read from stdin. Use `/dev/stdin` if you really need to do so.
 Usage:
 ```bash
 $ co aot --header test.co
-$ co read-lib test.coh
+$ co parse-header test.coh
 ```
