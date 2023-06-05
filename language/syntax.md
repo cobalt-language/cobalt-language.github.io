@@ -10,11 +10,13 @@ Definitions can take annotations, which are written as `@name` or `@name(arg)`. 
 
 ### Variables
 Variables can be defined with `let`, `mut`, or `const`.
+
 | Keyword | Behavior                                 | Variable type |
-|---------| -----------------------------------------|---------------|
+| ------- | ---------------------------------------- | ------------- |
 | `let`   | Defines a runtime constant variable      | Value or ref  |
 | `mut`   | Defines a runtime mutable variable       | mutable ref   |
 | `const` | Defines a compile-time constant variable | value         |
+
 With the expression `{kw} var = val;`, where `val`'s unwrapped type is `T`, `const` defines a variable of `T`, `mut` defines a variable of `T mut&`, and `let` can create `T` or `T const&`. `let` creates a reference if:
 - it has the `@stack` annotation
 - the variable needs a memory location (not fully implemented, may be removed)
@@ -22,6 +24,7 @@ With the expression `{kw} var = val;`, where `val`'s unwrapped type is `T`, `con
 Variables can have a type after `:`, and then a value after `=`. If the type is not set, it is inferred. If the value is not set, it defaults to `null`.
 
 #### Annotations
+
 | Annotation                          | Behavior                                     |
 |-------------------------------------|----------------------------------------------|
 | `@link(type)`                       | set linkage                                  |
@@ -46,8 +49,9 @@ Functions are defined with the `fn` keyword. Each parameter has the form `[const
 If a return type or body are not specified, they default to `null`.
 
 #### Annotations
+
 | Annotation                          | Behavior                                         |
-|-------------------------------------|--------------------------------------------------|
+| ----------------------------------- | ------------------------------------------------ |
 | `@link(type)`                       | set linkage                                      |
 | `@linkas(name)`                     | set link name                                    |
 | `@cconv(convention)`                | set calling convention. can either be name or id |
@@ -79,6 +83,9 @@ To add methods, use `type name = val :: {methods...};`, where the methods are de
 *NOTE*: This defines a new type. To define an alias, use `const`.
 
 #### Annotations
+
+| Annotation                          | Behavior                                     |
+| ----------------------------------- | -------------------------------------------- |
 | `@target(glob)`                     | only evaluate if the target matches the glob |
 | `@export(true | false (optional))`  | set module export, defaults to true          |
 | `@private(true | false (optional))` | does the opposite of `@export`               |
@@ -114,6 +121,9 @@ module name {
 The third defines a module with the statements' definitions inside it.
 
 #### Annotations
+
+| Annotation                          | Behavior                                     |
+| ----------------------------------- | -------------------------------------------- |
 | `@target(glob)`                     | only evaluate if the target matches the glob |
 | `@export(true | false (optional))`  | set module export, defaults to true          |
 | `@private(true | false (optional))` | does the opposite of `@export`               |
@@ -142,6 +152,9 @@ import {a, b}.c.*;
 ```
 
 #### Annotations
+
+| Annotation                          | Behavior                                     |
+| ----------------------------------- | -------------------------------------------- |
 | `@target(glob)`                     | only evaluate if the target matches the glob |
 | `@export(true | false (optional))`  | set module export, defaults to true          |
 | `@private(true | false (optional))` | does the opposite of `@export`               |
