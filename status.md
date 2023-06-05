@@ -6,23 +6,23 @@ Implementation status:
   - [x] Groups
     - [x] `()` groups
     - [x] `{}` groups
-  - [ ] Arrays
-    - [ ] Parser
-    - [ ] Codegen
-  - [ ] Structs
-    - [ ] Parser
-    - [ ] Codegen
+  - [x] Arrays
+    - [x] Parser
+    - [x] Codegen
+  - [x] Structs
+    - [x] Parser
+    - [x] Codegen
   - [ ] Templates (metafunctions)
   - [ ] Traits
-  - [ ] Macros
-    - [ ] Annotations
-    - [ ] Intrinsics
-    - [ ] Inline assembly
+  - [x] Macros (abandoned)
+    - [x] Annotations
+    - [x] Intrinsics
+    - [x] Inline assembly
 - Driver features
-  - [ ] Projects
-    - [ ] `build` subcommand
-    - [ ] `run` subcommand
-    - [ ]  [Cobalt libraries](./libraries)
+  - [x] Projects
+    - [x] `build` subcommand
+    - [x] `run` subcommand
+    - [x]  [Cobalt libraries](./libraries)
   - [ ] Packages
     - [ ] `install` subcommand
     - [ ] `prune` subcommand
