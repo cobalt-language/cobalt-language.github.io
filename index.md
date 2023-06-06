@@ -8,8 +8,8 @@ In order to build from source, Git, SSH, and LLVM 14 must be installed.
 ### Hello, World!
 Cobalt doesn't have a standard library at this point, so you have to make a call to a libc function.
 ```
-@C(extern) fn puts(str: i8 const*): null;
-fn main(): i32 = (puts("Hello, World!"); 0);
+@C(extern) fn puts(str: u8 const*);
+fn main(): i32 = (puts("Hello, World!"c); 0);
 ```
 The `@C` annotation sets disables name mangling, sets calling convention, and marks `puts` as externally defined.
 To compile, use `co aot helloworld.co`, and run the `helloworld` executable that it generates (`helloworld.exe` if the target is Windows).
