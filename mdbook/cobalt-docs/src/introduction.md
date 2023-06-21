@@ -10,9 +10,9 @@ Prebuilt versions are available from the [releases page](https://github.com/matt
 
 ### Building from source
 
-In order to build from source, you will need `git`, `ssh`, and LLVM 15 (_exactly_ version 15.0.0). 
+In order to build from source, you will need `git`, `ssh`, and LLVM 15 (version 15.0.X for any minor version X). 
 
-The LLVM dependency is the most likely to cause trouble. It is unlikely that this specific version (15.0.0) is already on your machine. You can download it by finding the appropriate version on the [LLVM releases page](https://releases.llvm.org/download.html). At the time of writing, it will take you the the corresponding [Github release page](https://github.com/llvm/llvm-project/releases/tag/llvmorg-15.0.0). Remember where you install it.
+The LLVM dependency is the most likely to cause trouble. It is unlikely that this specific version (e.g. 15.0.0) is already on your machine. You can download it by finding the appropriate version on the [LLVM releases page](https://releases.llvm.org/download.html), or through a package manager. Remember where you install it.
 
 Now we are ready to build Cobalt. Visit the [Github page](https://github.com/matt-cornell/cobalt-lang/) and clone the repository. Then, run `cargo build`:
 ```
@@ -57,9 +57,9 @@ The first line declares that we want to use an externally-defined function `puts
 
 Next we define a function `main()` which takes no arguments and returns an `i32`, which is a 32-bit integer.
 - The name `main` is not arbitrary; the compiler will look for the function with exactly this name to execute. Executing the program can be thought of as calling the function `main()`.
-- Note the `=` sign in the function declaration, and the semicolon at the very end. In Cobalt, functions are [first-class citizens](https://en.wikipedia.org/wiki/First-class_function), though this is only partially implemented at the moment.
+- Note the `=` sign in the function declaration, and the `;` at the very end.
 - The function first calls `puts()` with the argument `"Hello, World!"c`. String literals, surrounded by quotations marks, have type `u8 const*`. Note the `c` after the literal. This tells Cobalt that the string is a [C string](https://en.wikipedia.org/wiki/C_string_handling), which is what the C function `puts()` expects.
-- Finally, the line `0` returns the value `0` from the function. A `return` keyword is not necessary.
+- Finally, the line `0` returns the value `0` from the function. There is no `return` keyword at the moment.
 
 ### Compiling
 
