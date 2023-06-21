@@ -6,7 +6,7 @@ Cobalt is a high-level, compiled language with similar uses to C++. It aims to b
 
 ### Binaries
 
-Prebuilt versions are available from the [releases page](https://github.com/matt-cornell/cobalt-lang/releases/latest). As of right now, only the Linux `x86_64` build is available.
+Prebuilt versions are available from the [releases page](https://github.com/matt-cornell/cobalt-lang/releases/latest). As of right now, only the Linux `x86_64` build and Apple Silicon (`arm64`) is available.
 
 ### Building from source
 
