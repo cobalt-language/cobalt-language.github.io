@@ -110,5 +110,3 @@ If a grouping contains no expressions, then it is an expression which evalutes t
 let x = ();
 ```
 
-Generally speaking, Cobalt only allows expressions inside parenthesis. 
-
