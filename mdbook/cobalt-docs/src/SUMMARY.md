@@ -5,3 +5,6 @@
 # Language
 
 - [Comments](./comments.md)
+- [Types](./types.md)
+- [Blocks](./blocks.md)
+
