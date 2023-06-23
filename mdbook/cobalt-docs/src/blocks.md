@@ -4,7 +4,7 @@ Blocks (`{}`) and groupings (`()`) can sometimes be used interchangeably, but di
 
 ## Blocks
 
-_Blocks_ contain _statements_ and evaluate to a value (of some type). They are delimited by braces (`{}`) and must be followed by a semicolon (`;`). Blocks are themselves statements.
+_Blocks_ contain _statements_ and evaluate to a value (of some type). They are delimited by braces (`{}`) and must be followed by a semicolon (`;`). Blocks are themselves expressions.
 
 ```
 # This is a block:
@@ -20,7 +20,7 @@ _Blocks_ contain _statements_ and evaluate to a value (of some type). They are d
 };
 ```
 
-Blocks are statements of the same kind as the last statement contained within them. In the above example, the last statement in the outermost block is `let z = 3;`. This is a non-expression statement. Therefore, the outermost block is a non-expression statement. Recall that non-expression statements have value `null` and type `null`. On the other hand, if the last statement in the block is an expression, then the block is also an expression. In that case, the value of the block will be the value of the last expression contained within it (and the type of the value will be the type of the value of the last expression contained within it).
+Blocks are expressions with the same value as the last statement contained within them. In the above example, the last statement in the outermost block is `let z = 3;`. This is a non-expression statement. Recall that non-expression statements have value `null` and type `null`. On the other hand, if the last statement in the block is an expression, then the block is also an expression. In that case, the value of the block will be the value of the last expression contained within it (and the type of the value will be the type of the value of the last expression contained within it).
 
 ```
 # `x` has type/value `null`
