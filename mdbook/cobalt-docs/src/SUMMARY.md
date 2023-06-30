@@ -9,3 +9,7 @@
 - [Blocks](./blocks.md)
 - [Functions](./functions.md)
 
+# Toolchain
+
+- [Compiler CLI](./co_cli.md)
+
