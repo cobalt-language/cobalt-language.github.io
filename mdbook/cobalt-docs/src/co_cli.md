@@ -116,3 +116,53 @@ internalize = true
 | `/usr/local/share/cobalt/profiles/` |
 | `/usr/share/cobalt/profiles/` |
 
+## jit
+
+Just-in-time compilation can be achieved via 
+```
+> co jit <FILE>
+```
+with most of the options above being valid here too.
+
+## check
+
+`co check` goes through the frontend stages of compilation, but does not emit a compiled
+output. It takes most of the same commands as `co jit`. 
+
+## Debug-only subcommands
+
+The following commands are only available on debug builds of the compiler. They begin as 
+```
+> co dbg <SUBCOMMAND>
+```
+The following subcommands are available:
+
+| Subcommand | Description |
+|------------|-------------|
+| `parse` | Print generated AST. |
+| `llvm` | Print unoptimized llvm output. |
+| `parse-header` | Loads header files and prints the symbols. |
+
+### Notes and examples
+
+For `parse`:
+- Directly input code via the `-c` flag, e.g.
+```
+> co dbg parse -c 'let x = 10;'
+```
+- Show the locations of the AST nodes in the source file with the `-l` flag, e.g.
+```
+> co dbg parse -l test.co
+```
+- You can supply multiple input files, e.g. 
+```
+> co dbg parse test1.co test2.co
+```
+
+For `parse-header`:
+- Sample usage:
+```
+> co aot --header test.coh
+> co dbg parse-header test.coh
+```
+
