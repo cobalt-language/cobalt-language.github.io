@@ -58,3 +58,7 @@ fn main(argc: i32, argv: u8 const* const*): i32 = {
 };
 ```
 
+## Misc
+
+- If no body to a function is provided (and it is not `extern`) then the body defaults to null. In particular, the function can still be called.
+

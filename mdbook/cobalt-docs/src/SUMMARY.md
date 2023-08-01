@@ -8,6 +8,7 @@
 - [Types](./types.md)
 - [Blocks](./blocks.md)
 - [Functions](./functions.md)
+- [Operators](./operators.md)
 
 # Toolchain
 
