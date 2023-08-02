@@ -9,6 +9,7 @@
 - [Blocks](./blocks.md)
 - [Functions](./functions.md)
 - [Operators](./operators.md)
+- [Literals](./literals.md)
 
 # Toolchain
 
