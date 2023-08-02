@@ -14,18 +14,17 @@ where
 
 Each parameter has the form 
 ```
-<NAME>: [&] [mut] <TYPE> [= <DEFAULT VAL>]
+[const|mut] <NAME>: <TYPE> [= <DEFAULT VAL>]
 ```
 where 
-- `[&]` means a reference to the type. If it is followed by `mut`, then it is a mutable reference.
-- `[mut]` means that, optionally, you can write `mut` before the type. The meaning of these are the same as for variables. If `mut` isn't specified, the parameter is assumed to be runtime constant.  
+- `[const|mut]` means that, optionally, you can write `const` or `mut` before the type. `const` means the parameter is known at compile time. `mut` means the function can modify the parameter. If neither is specified, then you cannot change the value of the parameter.
 - `<NAME>` is the name of the parameter, which can be used inside the function.
 - `<TYPE>` is the type of the parameter.
 - `[= <DEFAULT VAL>]` means that, optionally, you can provide a default value to the parameter. 
 
-Note that having a parameter marked as `mut` is not the same as that parameter having type `&mut Ty`. For instance, the paramaters `arg: mut i32` and `arg: &mut i32` are not the same.
-- In the first case, `arg: mut i32`, the function has sole possession of the data underlying `arg`. Calling a function with such a parameter may result in an implicit copy.
-- In the second case, `arg: &mut i32`, the function does not have sole possession of the underlying data, but has permission to modify it.
+Note that having a reference parameter marked as `mut` is not the same as that parameter having type `&mut Ty`. For instance, the paramaters `mut arg: &i32` and `arg: &mut i32` are not the same.
+- In the first case, `mut arg: &i32`, you can reassign what is being referenced by `arg` but cannot mutate the underlying object.
+- In the second case, `arg: &mut i32`, you cannot reassign what is being referenced, but can mutate the underlying object.
 
 ## Annotations
 

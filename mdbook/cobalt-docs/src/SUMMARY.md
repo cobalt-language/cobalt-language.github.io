@@ -5,7 +5,9 @@
 # Language
 
 - [Comments](./comments.md)
-- [Types](./types.md)
+- [Built-in types](./builtin_types.md)
+- [Custom types](./custom_types.md)
+- [Variables](./variables.md)
 - [Blocks](./blocks.md)
 - [Functions](./functions.md)
 - [Operators](./operators.md)
