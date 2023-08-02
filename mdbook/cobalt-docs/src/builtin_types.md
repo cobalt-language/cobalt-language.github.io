@@ -40,8 +40,7 @@ Practically, this means you will not use variables of type `T[]` directly, but r
 
 ### Sized arrays
 
-- For now, sized arrays must also be behind references (see above).
-- `size` must be computable at compile-time.
+`size` must be computable at compile-time.
 
 ## Tuples
 
