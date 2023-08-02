@@ -22,7 +22,7 @@ Now we are ready to build Cobalt. Visit the [Github page](https://github.com/mat
 ```
 By default, `cargo` builds the `dev` profile which is unoptimized and intended for testing/development. You can build release by adding the `--release` flag, e.g. `cargo build --release`.
 
-Depending on how you installed LLVM, you may get compilation error mentioning missing `LLVM_SYS_150_PREFIX` and `LLVM_SYS_15_PREFIX`. Both of these environment variables should be set to point to where you installed LLVM. You can export these environment variables (so they are set globally) or export them directly to `cargo`. For example, if I installed LLVM in my home directory, I could do this:
+Depending on how you installed LLVM, you may get compilation error mentioning missing `LLVM_SYS_150_PREFIX` and `LLVM_SYS_15_PREFIX` (or the `16` counterparts). Both of these environment variables should be set to point to where you installed LLVM. You can export these environment variables (so they are set globally) or export them directly to `cargo`. For example, if I installed LLVM in my home directory, I could do this:
 ```
 > LLVM_SYS_150_PREFIX=~/llvm-15.0.0/ LLVM_SYS_15_PREFIX=~/llvm-15.0.0/ cargo build
 ```
@@ -42,23 +42,24 @@ Let's write and compile the customary "Hello, World!" program in Cobalt.
 
 The standard file extesion for Cobalt source code is `.co`. We'll create and open a file called `hello_world.co`. In it, we write the following code: 
 ```
-@C(extern) fn puts(str: u8 const*);
+@C(extern) fn puts(str: *u8);
 
 fn main(): i32 = {
-    puts("Hello, World!"c);
+    puts("Hello, World!");
+
     0
 };
 ```
 The first line declares that we want to use an externally-defined function `puts()`. 
 - The function `puts()` is defined in the C standard library, which Cobalt automatically links against.
 - The `@C(extern)` decoration can be thought of as declaring that the function `puts()` is defined in C. On a techincal level, it disables name mangling, sets calling convention, and marks `puts()` as externally defined.
-- We then tell Cobalt that the `puts()` function we are looking for takes a single argument (named `str`, though note that the actual name of the parameter is irrelevent) of type `u8 const*`.  
-- The type `u8` represents a byte, and the type `u8 const*` represents a pointer to constant bytes. The C function `puts()` expects a single paramater of type `const char*`. A `char` in C is just a byte, so the C type `const char*` corresponds to the Cobalt type `u8 const*`.
+- We then tell Cobalt that the `puts()` function we are looking for takes a single argument (named `str`, though note that the actual name of the parameter is irrelevent) of type `*u8`.  
+- The type `u8` represents a byte, and the type `*u8` represents a pointer to constant bytes. The C function `puts()` expects a single paramater of type `const char*`. A `char` in C is just a byte, so the C type `const char*` corresponds to the Cobalt type `*u8`.
 
 Next we define a function `main()` which takes no arguments and returns an `i32`, which is a 32-bit integer.
 - The name `main` is not arbitrary; the compiler will look for the function with exactly this name to execute. Executing the program can be thought of as calling the function `main()`.
 - Note the `=` sign in the function declaration, and the `;` at the very end.
-- The function first calls `puts()` with the argument `"Hello, World!"c`. String literals, surrounded by quotations marks, have type `u8 const*`. Note the `c` after the literal. This tells Cobalt that the string is a [C string](https://en.wikipedia.org/wiki/C_string_handling), which is what the C function `puts()` expects.
+- The function first calls `puts()` with the argument `"Hello, World!"`. String literals, surrounded by quotations marks, have type `*u8`. 
 - Finally, the line `0` returns the value `0` from the function. There is no `return` keyword at the moment.
 
 ### Compiling

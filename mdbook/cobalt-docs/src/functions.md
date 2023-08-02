@@ -14,17 +14,18 @@ where
 
 Each parameter has the form 
 ```
-[const | mut] <NAME>: <TYPE> [= <DEFAULT VAL>]
+<NAME>: [&] [mut] <TYPE> [= <DEFAULT VAL>]
 ```
 where 
-- `[const | mut]` means that, optionally, you can begin the parameter with `const` or `mut`. The meaning of these are the same as for variables. If neither `const` or `mut` is specified, the parameter is assumed to be runtime constant.  
+- `[&]` means a reference to the type. If it is followed by `mut`, then it is a mutable reference.
+- `[mut]` means that, optionally, you can write `mut` before the type. The meaning of these are the same as for variables. If `mut` isn't specified, the parameter is assumed to be runtime constant.  
 - `<NAME>` is the name of the parameter, which can be used inside the function.
 - `<TYPE>` is the type of the parameter.
 - `[= <DEFAULT VAL>]` means that, optionally, you can provide a default value to the parameter. 
 
-Note that having a parameter marked as `mut` is not the same as that parameter having type `Ty mut&`. For instance, the paramaters `mut arg: i32` and `arg: i32 mut&` are not the same.
-- In the first case, `mut arg: i32`, the function has sole possession of the data underlying `arg`. Calling a function with such a parameter may result in an implicit copy.
-- In the second case, `arg: i32 mut&`, the function does not have sole possession of the underlying data, but has permission to modify it.
+Note that having a parameter marked as `mut` is not the same as that parameter having type `&mut Ty`. For instance, the paramaters `arg: mut i32` and `arg: &mut i32` are not the same.
+- In the first case, `arg: mut i32`, the function has sole possession of the data underlying `arg`. Calling a function with such a parameter may result in an implicit copy.
+- In the second case, `arg: &mut i32`, the function does not have sole possession of the underlying data, but has permission to modify it.
 
 ## Annotations
 
@@ -49,11 +50,11 @@ Annotations can be placed above function definitions. The following options are 
 We can declare and use a function from `libc` as follows:
 ```
 # Note both return type and body are inferred to be null.
-@C(extern) fn puts(str: u8 const*); 
+@C(extern) fn puts(str: *u8); 
 
 # Note the allowed paramaters to `main()`.
-fn main(argc: i32, argv: u8 const* const*): i32 = {
-  puts("Hello, World!"c);
+fn main(argc: i32, argv: **u8): i32 = {
+  puts("Hello, World!");
   0
 };
 ```
