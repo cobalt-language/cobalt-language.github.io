@@ -4,7 +4,7 @@ Blocks (`{}`) and groupings (`()`) can sometimes be used interchangeably, but di
 
 ## Blocks
 
-_Blocks_ contain _statements_ and evaluate to a value (of some type). They are delimited by braces (`{}`) and must be followed by a semicolon (`;`). Blocks are themselves expressions.
+_Blocks_ contain _statements_ and evaluate to a value (of some type). They are delimited by braces (`{}`) . Blocks are themselves expressions. In particular, you may find that Cobalt requires semicolons after blocks where other languages do not.
 
 ```
 # This is a block:
@@ -17,7 +17,7 @@ _Blocks_ contain _statements_ and evaluate to a value (of some type). They are d
     };
 
     let z = 3;
-};
+};  # semicolon!
 ```
 
 Blocks are expressions with the same value as the last statement contained within them. In the above example, the last statement in the outermost block is `let z = 3;`. This is a non-expression statement. Recall that non-expression statements have value `null` and type `null`. On the other hand, if the last statement in the block is an expression, then the block is also an expression. In that case, the value of the block will be the value of the last expression contained within it (and the type of the value will be the type of the value of the last expression contained within it).
@@ -53,7 +53,7 @@ let y = {
 
 _Groupings_ contain expressions, and are themselves expressions. Recall that every expression is a statement, but not every statement is an expression. In particular, groupings cannot contain non-expression statements. 
 
-Groupings are delimited by parenthesis (`()`). They may or may not end with a semicolon. 
+Groupings are delimited by parenthesis (`()`). 
 
 The following is valid:
 ```

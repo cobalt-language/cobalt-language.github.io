@@ -1,5 +1,21 @@
 # Operators
 
+## Assignment operators 
+
+| Syntax        | Description                                       |
+| ------------- | ------------------------------------------------- |
+| `=`           | Ordinary assignment.                              |
+| `+=`          | Add and assign.                                   |
+| `-=`          | Subtract and assign.                              |
+| `*=`          | Multiply and assign.                              |
+| `/=`          | Divide and assign.                                |
+| `%=`          | Mod and assign.                                   |
+| `&=`          | Bit and, and assign.                              |
+| <code>&#x7c;=</code> | Bit or, and assign.                        |
+| `^=`          | Bit XOR and assign.                               |
+| `<<=`         | Bit shift left and assign.                        |
+| `>>=`         | Bit shift right and assign.                       |
+
 ## `:?`
 
 The `:?` operator is a bit cast. It results in a move.

@@ -14,5 +14,6 @@ x = 5i32;
 
 Variables which are known at compile time can be specified using the `const` keyword:
 ```
-let const x = 5i32;
+const x = 5i32;
 ```
+You do not include the `let` keyword.

@@ -17,3 +17,6 @@
 
 - [Compiler CLI](./co_cli.md)
 
+# Contributors
+
+- [Architecture](./architecture.md)
