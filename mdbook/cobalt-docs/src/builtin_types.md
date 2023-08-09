@@ -54,3 +54,59 @@ let x: (i32, f32) = (3, 3.1415);
 let x_int = x(0);
 let x_float = x(1); 
 ```
+
+## Structs 
+
+### Literals
+
+The simplest way to create a struct is to use literal notation.
+```
+let monster = { alive: true, health: 97i32, };
+```
+In the above example, `monster` has type `{alive: bool, health: i32}`.
+
+You can access fields using dot notation:
+```
+let health = monster.health;
+```
+
+### Nominals
+
+Structs can be named in the following way:
+```
+type <NAME> = {
+    <FIELD_NAME>: <FIELD_TYPE>,
+    ...
+}
+```
+To explicitly construct this, you need to use a bitcast:
+
+Fields are accessed with dot notation. The following is an illustrative example:
+```
+type MyStruct = {
+	field1: bool,
+	field2: i32,
+};
+
+fn main(): i32 = {
+    # `x` has type `{ field1: bool, field2: i32, }`
+	let x = { field1: false, field2: 3i32 };
+    # `y` has type `MyStruct`
+	let y = { field1: false, field2: 3i32 } :? MyStruct;
+};
+```
+
+However, keep in mind that naming a type like this obfuscates the base type. What this means practically is that, to access the fields of a named struct, you must either cast it to it's base type beforehand or mark it with the `@transparent` annotation:
+```
+@transparent
+type MyStruct = {
+	field1: bool,
+	field2: i32,
+};
+
+fn main(): i32 = {
+	let y = { field1: false, field2: 3i32 } :? MyStruct;
+
+    y.field2
+};
+```

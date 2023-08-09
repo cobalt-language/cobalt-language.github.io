@@ -26,6 +26,28 @@ Note that having a reference parameter marked as `mut` is not the same as that p
 - In the first case, `mut arg: &i32`, you can reassign what is being referenced by `arg` but cannot mutate the underlying object.
 - In the second case, `arg: &mut i32`, you cannot reassign what is being referenced, but can mutate the underlying object.
 
+### Reference parameters 
+
+To call a function with a reference parameter, you can either provide a reference or a value. If you provide a value then it will be automatically converted into a reference. 
+
+```
+fn foo(x: &i32);
+
+fn bar(y: &i32) = {
+    # Pass a reference parameter directly.
+    foo(y);
+};
+
+fn main(): i32 = {
+    let x = 3i32;
+
+    # Even though we pass in a value, since the function expects a reference it will convert it to a reference for us.
+    foo(x);
+
+    0
+}
+```
+
 ## Annotations
 
 Annotations can be placed above function definitions. The following options are available:

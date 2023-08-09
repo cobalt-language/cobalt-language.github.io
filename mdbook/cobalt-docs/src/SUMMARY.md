@@ -12,6 +12,7 @@
 - [Functions](./functions.md)
 - [Operators](./operators.md)
 - [Literals](./literals.md)
+- [Modules](./modules.md)
 
 # Toolchain
 
