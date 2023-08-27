@@ -14,7 +14,15 @@
 
 ## References and pointers
 
-The primary difference between a reference and a pointer is that pointers may point to invalid memory, whereas a reference to a type `T` is guarenteed to point to memory constituting an instance of `T`.
+The primary difference between a reference and a pointer is that a pointer needs to be dereferenced in order to act like the underlying value, while a reference does not. For instance, suppose there is a type `T` with method `foo()`. Here's how you would call this method with a reference and with a pointer:
+```
+# Suppose `x_ref` has type `&T`. 
+x_ref.foo();
+
+# Suppose `x_ptr` has type `*T`.
+(*x_ptr).foo();
+```
+The underlying concept in play here is _decaying_. In this context, a reference `&T` "decays" into `T`. You can think of this as an implicit conversion.
 
 | Syntax       | Description                    |
 | ------------ | ------------------------------ |
