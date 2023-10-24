@@ -40,7 +40,7 @@ fn foo(): i32 = {
 
 ### Imports
 
-If/when that get's tedious, you can bring the module's contents into the current scope by importing it:
+If/when that gets tedious, you can bring the module's contents into the current scope by importing it:
 ```
 module MyModule {
     let my_constant = 3i32;
