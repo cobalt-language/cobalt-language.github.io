@@ -1,8 +1,8 @@
 name: Deploy to gh-pages-new branch
 
 on:
-  # push:
-  #   branches: [ astro ] # Trigger on pushes to the astro branch
+  push:
+    branches: [ astro ] # Trigger on pushes to the astro branch
   workflow_dispatch:
 
 jobs:
