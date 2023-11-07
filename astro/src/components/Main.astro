@@ -1,0 +1,103 @@
+---
+import InlineCode from "./InlineCode.astro";
+import BlockCode from "./BlockCode.astro";
+import Heading from "./Heading.astro";
+---
+
+<h1>Cobalt Language Reference</h1>
+
+<Heading level={2} toc_text="Comments">Comments</Heading>
+<p>
+  Cobalt uses <code>#</code> for comments. Multiline comments start with
+  <code>#</code> and at least one <code>=</code>. They end with at least the
+  same number of <code>=</code>s.
+  <BlockCode
+    title="comment_syntax.co"
+    src={String.raw`#=
+This is a multi-line comment.
+=#
+
+# This is a single-line comment.`}
+  />
+</p>
+
+<Heading level={3} toc_text="Multi-line comments">Multi-line comments</Heading>
+<p>
+  The syntax for a multi-line comment is:
+  <BlockCode
+    title="multiline_comment_syntax.co"
+    src={String.raw`#=
+This is a multi-line comment.
+=#`}
+  />
+</p>
+
+<p>
+  You can close a multi-line comment with the same or more <InlineCode
+    src="="
+  />s than you started with, but not less.
+  <BlockCode
+    title="close_multiline_comment.co"
+    src={String.raw`#===
+These won't close the comment:
+=#
+==#
+But this will:
+=======#`}
+  />
+</p>
+
+<p>
+  Multi-line comments can't be nested:
+  <BlockCode
+    title="multiline_no_nesting.co"
+    src={String.raw`#==
+There is no problem with writing 
+#========= yo! =#
+even though it is an invalid multiline comment, since the 
+parser does not treat it as a comment (since it is contained
+within a comment).
+==#`}
+  />
+</p>
+
+<p>
+  The parser is greedy on <InlineCode src="=" />s:
+  <BlockCode
+    title="multiline_greedy.co"
+    src={String.raw`#===#
+...
+===#`}
+  />
+   In line 1, the parser takes <code>#===</code> as the comment start, and <code
+    >#</code
+  > as the next character. It does not, for example, see it as a comment start (<code
+    >#=</code
+  >) followed by a comment end (<code>==#</code>).
+</p>
+
+<Heading level={2} toc_text="Variables">Variables</Heading>
+<p>
+  Variables are defined with the <InlineCode src="let" /> keyword. Types are
+  deduced, but can also be manually specified:
+  <BlockCode
+    title="var_def_syntax.co"
+    src={[
+      `let x = 3i32;       # deduced type`,
+      `let y: i32 = 4i32;  # explicit type`,
+    ].join("\n")}
+  />
+</p>
+<p>
+  Mutable variables are marked by the <InlineCode src="mut" /> keyword:
+  <BlockCode
+    title="mut_var_syntax.co"
+    src={[`let mut x = 3i32;`, `x = 5i32;`].join("\n")}
+  />
+</p>
+<p>
+  Variables which are known at compile time can be specified using the
+  <InlineCode src="const" /> keyword:
+  <BlockCode title="const_var_syntax.co" src="const x = 5i32;" />
+   You do not include the <InlineCode src="let" /> keyword.
+</p>

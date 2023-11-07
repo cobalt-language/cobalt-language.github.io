@@ -1,0 +1,35 @@
+---
+import "../styles/general.css";
+import Line from "./Line.astro";
+
+const { title, src } = Astro.props;
+---
+
+<figure>
+  <figcaption>{title}</figcaption>
+  <pre><code class="block-code">{src.split('\n').map((lineContent: string, _index: number) => (
+    <Line src={lineContent} />
+  ))}</code></pre>
+</figure>
+
+<style>
+  .block-code {
+    display: block;
+  }
+
+  figure {
+    margin: auto 0;
+  }
+
+  figcaption {
+    padding-left: 0.5em;
+    font-size: small;
+    font-weight: bold;
+    font-style: italic;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    background-color: rgb(var(--accent-light));
+    color: #000;
+  }
+</style>

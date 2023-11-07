@@ -1,0 +1,36 @@
+---
+const { src } = Astro.props;
+
+const KEYWORDS = ["let", "mut", "const"];
+var in_comment = false;
+---
+
+<span class="line">
+  {
+    src.split(" ").map((word: string) => {
+      if (KEYWORDS.includes(word)) {
+        return <span class="keyword">{word + " "}</span>;
+      } else if (word === "#") {
+        in_comment = true;
+        return <span class="comment">{word + " "}</span>;
+      } else if (in_comment) {
+        return <span class="comment">{word + " "}</span>;
+      } else {
+        return <span class="text">{word + " "}</span>;
+      }
+    })
+  }
+  <br />
+</span>
+
+<style>
+  .keyword {
+    font-weight: bold;
+  }
+
+  .text {
+  }
+  .comment {
+    color: var(--CODE-CS-comment);
+  }
+</style>

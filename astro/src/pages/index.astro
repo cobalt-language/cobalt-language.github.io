@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Main from "../components/Main.astro";
+import TOC from "../components/TOC.astro";
+---
+
+<Layout title="Cobalt Language Reference">
+  <div
+    id="main_content_wrapper_id"
+    class="main_content_wrapper main_content_wrapper_margin_left"
+  >
+    <main class="main_content">
+      <Main />
+    </main>
+  </div>
+  <TOC />
+</Layout>
+
+<style>
+  li {
+    margin-left: calc(var(--level, 1) * 1em);
+  }
+</style>
