@@ -7,5 +7,5 @@ const { level, toc_text } = Astro.props;
 </header>
 
 <script is:inline define:vars={{ toc_text, level }}>
-addToTOC(toc_text, 1);
+addToTOC(toc_text, level);
 </script>

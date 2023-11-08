@@ -116,8 +116,6 @@ const toc = document.getElementById("toc-override");
 if (!toc) {
   console.log("toc not found");
 } else {
-  console.log("toc found... updating");
-
   toc.innerHTML = "";
   const h2 = document.createElement("h2");
   h2.textContent = "Contents";
@@ -129,10 +127,32 @@ if (!toc) {
   const ul = document.createElement("ul");
   nav.appendChild(ul);
 
+  // An item with level `n` can find its parent at index `n-2`.
+  var item_parents = [ul];
   toc_items.forEach((item) => {
+    const parent_idx = item.level - 2;
+
+    // If `parent_idx` is not pointing to the last element in `item_parents`,
+    // and there are more items in that list, we need to remove elements until
+    // `parent_idx` is pointing to the last element.
+    while (parent_idx < item_parents.length - 1) {
+      item_parents.pop();
+    }
+
+    // On the other hand, if `parent_idx` is pointing beyond the last element,
+    // we need to create parents until `parent_idx` is pointing to the last element.
+    if (parent_idx > item_parents.length - 1) {
+      for (var i = item_parents.length; i <= parent_idx; i++) {
+        const ul = document.createElement("ul");
+        item_parents[i - 1].appendChild(ul);
+        item_parents.push(ul);
+      }
+    }
+
     const li = document.createElement("li");
     li.innerHTML = `<a href="#${item.text}">${item.text}</a>`;
-      ul.appendChild(li);
-    });
-  }
+
+    item_parents[parent_idx].appendChild(li);
+  });
+}
 </script>

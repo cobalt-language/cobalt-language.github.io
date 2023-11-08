@@ -76,6 +76,244 @@ within a comment).
   >) followed by a comment end (<code>==#</code>).
 </p>
 
+<Heading level={2} toc_text="Built-in types">Built-in types</Heading>
+
+<Heading level={3} toc_text="Numbers">Numbers</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>{String.raw`i{bits}`}</code></td>
+        <td>signed integer with specified bits</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`isize`}</code></td>
+        <td>signed integer with same bits as a pointer</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`u{bits}`}</code></td>
+        <td>unsigned integer with specified bits</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`usize`}</code></td>
+        <td>unsigned integer with same bits as a pointer</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`f{16|32|64|128}`}</code></td>
+        <td>floating-point number with specified bits</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  <code>bits</code> is any positive integer less that 65,536. Typically you want
+  to stick to a power of 2, and are probably good with using 32 or 64.
+</p>
+
+<Heading level={3} toc_text="References and pointers">
+  References and pointers
+</Heading>
+<p>
+  The primary difference between a reference and a pointer is that a pointer
+  needs to be dereferenced in order to act like the underlying value, while a
+  reference does not. For instance, suppose there is a type <code>T</code> with
+  method <code>foo()</code>. Here's how you would call this method with a
+  reference and with a pointer:
+</p>
+<BlockCode
+  title="call_with_ref_ptr.co"
+  src={String.raw`# Suppose x_ref has type &T. 
+x_ref.foo();
+
+# Suppose x_ptr has type *T.
+(*x_ptr).foo();`}
+/>
+<p>
+  The underlying concept in play here is <i>decaying</i>. In this context, a
+  reference <code>&T</code> "decays" into <code>T</code>. You can think of this
+  as an implicit conversion.
+</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>*T</code></td>
+        <td
+          >pointer to type <code>T</code>: cannot change the memory being
+          pointed to</td
+        >
+      </tr>
+      <tr>
+        <td><code>*mut T</code></td>
+        <td
+          >mutable pointer to type <code>T</code>: can change the memory being
+          pointed to</td
+        >
+      </tr>
+      <tr>
+        <td><code>&T</code></td>
+        <td
+          >reference to type <code>T</code>: cannot change the underlying
+          instance</td
+        >
+      </tr>
+      <tr>
+        <td><code>&mut T</code></td>
+        <td
+          >mutable reference to type <code>T</code>: can change the underlying
+          instance</td
+        >
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Heading level={3} toc_text="Arrays">Arrays</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>T[]</code></td>
+        <td>unsized array of objects of type <code>T</code></td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`T[{size}]`}</code></td>
+        <td>
+          sized array (with size <code>size</code>) of objects of type
+          <code>T</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<Heading level={4} toc_text="Unsized">Unsized</Heading>
+<p>
+  For unsized arrays, there are two things to note:
+  <ul>
+    <li><code>T[]</code> must be behind a reference.</li>
+    <li>The size is stored with the data as a fat pointer.</li>
+  </ul>
+   Practically, this means you will not use variables of type <code>T[]</code>
+   directly, but rather use references <code>&T[]</code> or
+  <code>&mut T[]</code>. In this case, the reference can be thought of as a fat
+  pointer which stores the size of the array. In particular, you don't need to
+  keep track of the array size in a different variable.
+</p>
+<Heading level={4} toc_text="Sized">Sized</Heading>
+<p>For sized arrays, <code>size</code> must be known at compile time.</p>
+
+<Heading level={3} toc_text="Tuples">Tuples</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>(T, U, V, ...)</code></td>
+        <td>
+          tuple whose first element is type <code>T</code>, second is type
+          <code>U</code>, etc.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>You can access the members with parentheses:</p>
+<BlockCode
+  title="tuple_access.co"
+  src={String.raw`let x: (i32, f32) = (3, 3.1415);
+let x_int = x(0);
+let x_float = x(1);`}
+/>
+
+<Heading level={3} toc_text="Structs">Structs</Heading>
+
+<Heading level={4} toc_text="Literals">Literals</Heading>
+<p>The simplest way to create a struct is to use literal notation.</p>
+<BlockCode
+  title="struct_literal_syntax.co"
+  src={String.raw`let monster = { alive: true, health: 97i32, };`}
+/>
+<p>
+  In the above example, <code>monster</code> has type <code
+    >{String.raw`{alive: bool, health: i32}`}</code
+  >.
+</p>
+
+<p>You can access fields using dot notation:</p>
+<BlockCode
+  title="struct_access_syntax.co"
+  src={String.raw`let health = monster.health;`}
+/>
+
+<Heading level={4} toc_text="Nominals">Nominals</Heading>
+<p>Structs can be named in the following way:</p>
+<BlockCode
+  title="struct named syntax"
+  src={String.raw`type <NAME> = {
+  <FIELD_NAME>: <FIELD_TYPE>,
+  ...
+};`}
+/>
+<p>
+  To explicitly construct this, you can use a bitcast, or define a "constructor"
+  which itself uses a bitcast.
+</p>
+<BlockCode
+  title="struct_bitcast_syntax.co"
+  src={String.raw`type MyStruct = {
+  field1: bool,
+  field2: i32,
+};
+
+fn main(): i32 = {
+  let y = { field1: false, field2: 3i32 } :? MyStruct;
+  # ...
+};`}
+/>
+<p>
+  However, keep in mind that naming a type like this obfuscates the base type.
+  What this means practically is that, to access the fields of a named struct,
+  you must either cast it to it's base type beforehand or mark it with the
+  <code>@transparent</code> annotation:
+</p>
+<BlockCode
+  title="struct_transparent_syntax.co"
+  src={String.raw`@transparent
+type MyStruct = {
+  field1: bool,
+  field2: i32,
+};
+
+fn main(): i32 = {
+  let y = { field1: false, field2: 3i32 } :? MyStruct;
+
+  y.field2
+};`}
+/>
+
 <Heading level={2} toc_text="Variables">Variables</Heading>
 <p>
   Variables are defined with the <InlineCode src="let" /> keyword. Types are
@@ -101,3 +339,39 @@ within a comment).
   <BlockCode title="const_var_syntax.co" src="const x = 5i32;" />
    You do not include the <InlineCode src="let" /> keyword.
 </p>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+
+  th {
+    font-size: small;
+    font-weight: bold;
+    font-style: italic;
+
+    background-color: var(--table-header-bg);
+    color: #000;
+  }
+
+  table th:first-child {
+    border-radius: 5px 0 0 0;
+  }
+
+  table th:last-child {
+    border-radius: 0 5px 0 0;
+  }
+
+  table td {
+    padding: 3px 20px;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: var(--table-row-alternate-bg);
+  }
+</style>
