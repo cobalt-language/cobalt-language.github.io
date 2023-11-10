@@ -518,6 +518,143 @@ fn main(): i32 = {
    You do not include the <InlineCode src="let" /> keyword.
 </p>
 
+<Heading level={2} toc_text="Blocks and groupings">
+  Blocks and groupings
+</Heading>
+<p>
+  Blocks (<code>{"{}"}</code>) and groupings (<code>()</code>) can sometimes be
+  used interchangeably, but differ in subtle ways.
+</p>
+
+<Heading level={3} toc_text="Blocks">Blocks</Heading>
+<p>
+  <i>Blocks</i> contain <i>statements</i> and evaluate to a value (of some
+  type). They are delimited by braces (<code>{"{}"}</code>). Blocks are
+  themselves expressions. In particular, you may find that Cobalt requires
+  semicolons after blocks where other languages do not.
+</p>
+<BlockCode
+  title="block_syntax.co"
+  src={String.raw`# This is a block:
+{
+  let x = 1;
+
+  # This is a block within a block:
+  {
+      let y = 2;    
+  };
+
+  let z = 3;
+};  # semicolon!`}
+/>
+<p>
+  Blocks are expressions with the same value as the last statement contained
+  within them. In the above example, the last statement in the outermost block
+  is <code>let z = 3;</code>. This is a non-expression statement. Recall that
+  non-expression statements have value <code>null</code> and type
+  <code>null</code>. On the other hand, if the last statement in the block is an
+  expression, then the block is also an expression. In that case, the value of
+  the block will be the value of the last expression contained within it (and
+  the type of the value will be the type of the value of the last expression
+  contained within it).
+</p>
+<BlockCode
+  title="block_as_expr.co"
+  src={String.raw`# x has type/value null
+let x = {
+  let y = 1;
+};
+
+# z has type i32 and value 5 
+let z = {
+  2i32 + 3i32 # uses i32 literal syntax 
+};`}
+/>
+<p>
+  An important property of blocks is that they introduce a new scope. This is
+  similar to the scoping behavior in other languages.
+</p>
+<BlockCode
+  title="block_scope.co"
+  src={String.raw`let x = 1;
+
+let y = {
+  let z = 2;
+
+  # x is accessible in the inner scope
+  z + x
+};
+
+# z is not accessible in the outer scope`}
+/>
+
+<Heading level={3} toc_text="Groupings">Groupings</Heading>
+<p>
+  <i>Groupings</i> contain expressions, and are themselves expressions. Recall
+  that every expression is a statement, but not every statement is an
+  expression. In particular, groupings cannot contain non-expression statements.
+</p>
+<p>
+  Groupings are delimited by parenthesis (<code>()</code>).
+</p>
+<BlockCode
+  title="groupings_ex.co"
+  src={String.raw`# x has type i32 and value 2
+let x = (
+  2i32
+);
+
+# a has type/value null
+let a = (
+  1 + 1;
+);
+
+# y has type i32 and value 2
+let y = (
+  (
+      2i32
+  )
+);
+
+# b has type/value null
+let b = (
+  # the value of an expression ending with a semicolon is null
+  (
+      2i32
+  );
+);`}
+/>
+<p>This, however, is not valid (compare with blocks):</p>
+<BlockCode
+  title="invalid group"
+  src={String.raw`# Compiler error!
+let x = (
+  let y = 1;
+);`}
+/>
+<p>In some cases, though, groupings and blocks can be used interchangeably.</p>
+<BlockCode
+  title="group_block.co"
+  src={String.raw`# x has type i32 and value 2 
+let x = {
+  2i32  
+};
+
+# y has type i32 and value 2 
+let y = (
+  2i32
+);`}
+/>
+<p>
+  If a grouping contains no expressions, then it is an expression which evalutes
+  to <code>null</code>.
+</p>
+<BlockCode
+  title="empty_group.co"
+  src={String.raw`# x has type/value null
+let x = ();`}
+/>
+
 <style>
   .table-wrapper {
     overflow-x: auto;
