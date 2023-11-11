@@ -655,6 +655,199 @@ let y = (
 let x = ();`}
 />
 
+<Heading level={2} toc_text="Functions">Functions</Heading>
+
+<p>Functions are defined as</p>
+<BlockCode
+  title="function syntax"
+  src={String.raw`fn <NAME>(<PARAM>*): <TYPE> = <EXPR>`}
+/>
+<p>
+  where
+  <ul>
+    <li><code>{"<NAME>"}</code> is the name of the function.</li>
+    <li>
+      <code>{"<PARAM>"}</code> is a function parameter. These are described in
+      more detail below. By <code>{"<PARAM>*"}</code> we mean that a function
+      may have zero or more parameters. Each parameter must be separated by a
+      comma.
+    </li>
+    <li>
+      <code>{"<TYPE>"}</code> is the return type of the function. If none is
+      specified, don't include the colon : and the return type will be assumed
+      to be <code>null</code>.
+    </li>
+    <li>
+      <code>{"<EXPR>"}</code> is an expression. Typically, this would be a block
+      (<code>{"{..}"}</code>). If nothing is specified, this will default to
+      <code>null</code>.
+    </li>
+  </ul>
+</p>
+
+<Heading level={3} toc_text="Parameters">Parameters</Heading>
+
+<p>Each parameter has the form</p>
+<BlockCode
+  title="function parameter syntax"
+  src={String.raw`[const|mut] <NAME>: <TYPE> [= <DEFAULT VAL>]`}
+/>
+<p>
+  where
+  <ul>
+    <li>
+      <code>[const|mut]</code> means that, optionally, you can write const or
+      mut before the type. const means the parameter is known at compile time.
+      mut means the function can modify the parameter. If neither is specified,
+      then you cannot change the value of the parameter.
+    </li>
+    <li>
+      <code>{"<NAME>"}</code> is the name of the parameter, which can be used
+      inside the function.
+    </li>
+    <li><code>{"<TYPE>"}</code> is the type of the parameter.</li>
+    <li>
+      <code>{"[= <DEFAULT VAL>]"}</code> means that, optionally, you can provide
+      a default value to the parameter.
+    </li>
+  </ul>
+</p>
+<p>
+  Note that having a reference parameter marked as <code>mut</code> is not the
+  same as that parameter having type <code>&mut Ty</code>. For instance, the
+  paramaters <code>mut arg: &i32</code> and
+  <code>arg: &mut i32</code> are not the same:
+  <ul>
+    <li>
+      In the first case, <code>mut arg: &i32</code>, you can reassign what is
+      being referenced by arg but cannot mutate the underlying object.
+    </li>
+    <li>
+      In the second case, <code>arg: &mut i32</code>, you cannot reassign what
+      is being referenced, but can mutate the underlying object.
+    </li>
+  </ul>
+</p>
+
+<Heading level={4} toc_text="Reference parameters">
+  Reference parameters
+</Heading>
+
+<p>
+  To call a function with a reference parameter, you can either provide a
+  reference or a value. If you provide a value then it will be automatically
+  converted into a reference.
+</p>
+<BlockCode
+  title="reference_param.co"
+  src={String.raw`fn foo(x: &i32);
+
+fn bar(y: &i32) = {
+  # Pass a reference parameter directly.
+  foo(y);
+};
+
+fn main(): i32 = {
+  let x = 3i32;
+
+  # Even though we pass in a value, since the function expects a reference it 
+  # will convert it to a reference for us.
+  foo(x);
+
+  0
+}`}
+/>
+
+<Heading level={3} toc_text="Annotations">Annotations</Heading>
+
+<p>
+  Annotations can be placed above function definitions. The following options
+  are available:
+</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Annotation</th>
+        <th>Behavior</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>@link(type)</code></td>
+        <td>set linkage</td>
+      </tr>
+      <tr>
+        <td><code>@linkas(name)</code></td>
+        <td>set link name</td>
+      </tr>
+      <tr>
+        <td><code>@cconv(convention)</code></td>
+        <td>set calling convention. can either be name or id</td>
+      </tr>
+      <tr>
+        <td><code>@extern(cconv (optional))</code></td>
+        <td>set function as externally defined</td>
+      </tr>
+      <tr>
+        <td><code>@inline(always | never)</code></td>
+        <td>inline function. may or may not actually be done</td>
+      </tr>
+      <tr>
+        <td><code>@C(extern (optional))</code></td>
+        <td>unmangle link name and use C calling convention</td>
+      </tr>
+      <tr>
+        <td><code>@target(glob)</code></td>
+        <td>only evaluate if the target matches the glob</td>
+      </tr>
+      <tr>
+        <td><code>@export(true | false (optional))</code></td>
+        <td>set module export, defaults to true</td>
+      </tr>
+      <tr>
+        <td><code>@private(true | false (optional))</code></td>
+        <td>does the opposite of <code>@export</code></td>
+      </tr>
+      <tr>
+        <td><code>@method</code> (types only)</td>
+        <td>mark a function as a method</td>
+      </tr>
+      <tr>
+        <td><code>@getter</code> (types only)</td>
+        <td>mark a function as a getter</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  For example, we can declare and use a function from <code>libc</code> as
+  follows:
+</p>
+<BlockCode
+  title="fn_annotation_example.co"
+  src={String.raw`# Note both return type and body are inferred to be null.
+@C(extern) fn puts(str: *u8); 
+
+# Note the allowed paramaters to main().
+fn main(argc: i32, argv: **u8): i32 = {
+  puts("Hello, World!");
+  0
+};`}
+/>
+
+<Heading level={3} toc_text="Miscellaneous">Miscellaneous</Heading>
+
+<p>
+  <ul>
+    <li>
+      If no body to a function is provided (and it is not <code>extern</code>)
+      then the body defaults to <code>null</code>. In particular, the function
+      can still be called.
+    </li>
+  </ul>
+</p>
+
 <style>
   .table-wrapper {
     overflow-x: auto;
