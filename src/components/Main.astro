@@ -848,6 +848,111 @@ fn main(argc: i32, argv: **u8): i32 = {
   </ul>
 </p>
 
+<Heading level={2} toc_text="Operators">Operators</Heading>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>=</code></td>
+        <td>Ordinary assignment.</td>
+      </tr>
+      <tr>
+        <td><code>+=</code></td>
+        <td>Add and assign.</td>
+      </tr>
+      <tr>
+        <td><code>-=</code></td>
+        <td>Subtract and assign.</td>
+      </tr>
+      <tr>
+        <td><code>*=</code></td>
+        <td>Multiply and assign.</td>
+      </tr>
+      <tr>
+        <td><code>/=</code></td>
+        <td>Divide and assign.</td>
+      </tr>
+      <tr>
+        <td><code>%=</code></td>
+        <td>Mod and assign.</td>
+      </tr>
+      <tr>
+        <td><code>&=</code></td>
+        <td>Bit and, and assign.</td>
+      </tr>
+      <tr>
+        <td><code>|=</code></td>
+        <td>Bit or, and assign.</td>
+      </tr>
+      <tr>
+        <td><code>^=</code></td>
+        <td>Bit XOR and assign.</td>
+      </tr>
+      <tr>
+        <td><code>{"<<="}</code></td>
+        <td>Bit shift left and assign.</td>
+      </tr>
+      <tr>
+        <td><code>{">>="}</code></td>
+        <td>Bit shift right and assign.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Heading level={3} toc_text="Bit cast">Bit cast</Heading>
+
+<p>
+  The bitcast operator (<code>:?</code>) results in a move:
+</p>
+<BlockCode
+  title="bitcast_moves.co"
+  src={String.raw`type MyInt1 = i32;
+type MyInt2 = MyInt1;
+
+fn main() = {
+  let x = 3i32 :? MyInt1;
+  let y = x :? MyInt2;  # x moved here.
+
+  # x is no longer valid.
+
+  0
+};`}
+/>
+
+<Heading level={2} toc_text="Literals">Literals</Heading>
+
+<Heading level={3} toc_text="Strings">Strings</Heading>
+
+<p>String literals can be specified with double quotations:</p>
+<BlockCode
+  title="bitcast_moves.co"
+  src={String.raw`let s = "Hello, world!";`}
+/>
+<p>
+  A string literal can be immediately followed by <code>c</code>. This used to
+  be required to pass string literals as parameters to (<code>extern</code>)
+  functions expected C-style strings, but is no longer necessary. This is
+  because string literals are automatically appended by a null terminator.
+  However, by default, this does not affect the length of the string. If you
+  include the c suffix, it will:
+</p>
+<BlockCode
+  title="c_string_len.co"
+  src={String.raw`# length is 2
+let s1 = "hi";
+
+# length is 3
+let s1 = "hi"c;`}
+/>
+
 <style>
   .table-wrapper {
     overflow-x: auto;
