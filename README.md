@@ -21,9 +21,9 @@ Things here are perfectly usable, but you won't find them anywhere in the docume
 
 - [ ] Syntax
   - [ ] Literals
-    - [ ] Numeric
-      - [ ] Integer
-      - [ ] Floats
+    - [x] Numeric
+      - [x] Integer
+      - [x] Floats
     - [x] String
     - [ ] Character
 - [ ] Semantics

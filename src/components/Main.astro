@@ -953,6 +953,31 @@ let s1 = "hi";
 let s1 = "hi"c;`}
 />
 
+<Heading level={3} toc_text="Integers">Integers</Heading>
+
+<p>
+  Integers can be specified with suffixes beginning with <code>i</code> or
+  <code>u</code>, followed by the number of bits. If <code>size</code> is
+  provided instead of a number (positive integer less than 65,536), then the
+  resulting integer will have the same size as a pointer. For example:
+</p>
+<BlockCode
+  title="integer_literals.co"
+  src={String.raw`# signed integer with value 3 with size equal to 32 bits
+let s1 = 3i32;
+
+# unsigned integer of value 3 with size equal to that of a pointer
+let s1 = 3usize;`}
+/>
+<p>If no suffix is provided, the type is inferred.</p>
+
+<Heading level={3} toc_text="Floats">Floats</Heading>
+
+<p>
+  Float literals can be suffixed with a <code>f</code> followed by either
+  <code>16</code>, <code>32</code>, <code>64</code>, or <code>128</code>.
+</p>
+
 <Heading level={2} toc_text="Modules">Modules</Heading>
 
 <p>Modules are a way of giving a scope and namespace to your code.</p>
