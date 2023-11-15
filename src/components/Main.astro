@@ -953,6 +953,83 @@ let s1 = "hi";
 let s1 = "hi"c;`}
 />
 
+<Heading level={2} toc_text="Modules">Modules</Heading>
+
+<p>Modules are a way of giving a scope and namespace to your code.</p>
+
+<Heading level={3} toc_text="Same-file">Same-file</Heading>
+
+<p>The basic syntax is:</p>
+<BlockCode
+  title="module same-file syntax"
+  src={String.raw`module <NAME> {
+  <TOP_LEVEL_DECLARATIONS>+
+};`}
+/>
+<p>
+  Recall that a top level declarations can be functions and variable
+  assignments. For example,
+</p>
+<BlockCode
+  title="module_same_file_example.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+
+  fn my_function(): i32 = {
+      6i32
+  };
+};`}
+/>
+
+<Heading level={3} toc_text="Using it">Using it</Heading>
+<p>To use the things defined in a module, you have a few options.</p>
+<p>
+  If the module is defined in the same file you want to use it, then you can
+  prefix its elements with the module name, kind of like a namespace:
+</p>
+<BlockCode
+  title="module_same_file_usage.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+};
+
+fn foo(): i32 = {
+  MyModule.my_constant
+};`}
+/>
+
+<Heading level={4} toc_text="Imports">Imports</Heading>
+<p>
+  If/when that gets tedious, you can bring the module's contents into the
+  current scope by importing it:
+</p>
+<BlockCode
+  title="module_import_syntax.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+  let my_other_constant = 5i32;
+};
+
+import MyModule.*;
+
+fn foo(): i32 = {
+  MyModule.my_constant
+};`}
+/>
+<p>
+  The wildcard <code>*</code> imports all elements of the module. You can import
+  a single item like this:
+</p>
+<BlockCode
+  title="import_single.co"
+  src={String.raw`import MyModule.my_constant;`}
+/>
+<p>or multiple items like this:</p>
+<BlockCode
+  title="import_single.co"
+  src={String.raw`import MyModule.{my_constant, my_other_constant};`}
+/>
+
 <style>
   .table-wrapper {
     overflow-x: auto;
