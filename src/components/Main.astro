@@ -314,6 +314,23 @@ fn main(): i32 = {
 };`}
 />
 
+<Heading level={3} toc_text="Symbol types">Symbol types</Heading>
+
+<p>
+  Symbol types are ZSTs (zero-sized types). They are defined "in place", meaning
+  you don't need to have defined them somewhere else to use them. The syntax is
+  as follows:
+</p>
+
+<BlockCode
+  title="symbol_type_syntax.co"
+  src={String.raw`# Syntax 1: a $ followed by any identifier:
+$foo
+
+# Syntax 2: a $ followed by a double-quote string literal:
+$"a\nb"`}
+/>
+
 <Heading level={2} toc_text="Custom types">Custom types</Heading>
 
 <p>
