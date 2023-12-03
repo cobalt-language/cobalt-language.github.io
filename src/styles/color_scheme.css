@@ -1,0 +1,22 @@
+:root {
+    --accent: rgb(136, 58, 234);
+    --accent-light: rgb(224, 204, 250);
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+
+    --nav-width: 20em;
+    --nav-margin-l: 1em;
+
+    --CODE-CS-comment: #999;
+    --CODE-CS-annotation: #e8ad59;
+    --CODE-CS-keyword: #f4bcd2;
+
+    --table-header-bg: rgb(var(--accent-light));
+    --table-row-alternate-bg: #23262d;
+    --table-border-color: #ccc;
+  }

@@ -1,23 +1,22 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Main from "../components/Main.astro";
-import TOC from "../components/TOC.astro";
+import ButtonLink from "../components/index/ButtonLink.astro";
 ---
 
-<Layout title="Cobalt Language Reference">
+<Layout title="Cobalt Language">
   <div
     id="main_content_wrapper_id"
     class="main_content_wrapper main_content_wrapper_margin_left"
   >
     <main class="main_content">
-      <Main />
+      <h1>Cobalt Language</h1>
+
+      <p>
+        A low-level, compiled programming language made as an alternative to C++
+        and Rust.
+      </p>
+      <ButtonLink href="/documentation/">Documentation</ButtonLink>
+      <a href="/blog/">Blog</a>
     </main>
   </div>
-  <TOC />
 </Layout>
-
-<style>
-  li {
-    margin-left: calc(var(--level, 1) * 1em);
-  }
-</style>

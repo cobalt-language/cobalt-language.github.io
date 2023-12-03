@@ -1,7 +1,6 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://cobalt-language.github.io',
-  base: '/cobalt-language.github.io',
+  site: "https://cobalt-language.github.io",
 });
