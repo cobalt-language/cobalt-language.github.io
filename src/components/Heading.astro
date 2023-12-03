@@ -1,0 +1,11 @@
+---
+const { level, toc_text } = Astro.props;
+---
+
+<header class={`h${level}`} id={toc_text}>
+  <slot />
+</header>
+
+<script is:inline define:vars={{ toc_text, level }}>
+addToTOC(toc_text, level);
+</script>

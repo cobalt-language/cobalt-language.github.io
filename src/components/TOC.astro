@@ -1,0 +1,158 @@
+<aside id="table-of-contents" class="toc">
+  <!--- Wrapper to allow relative positioning within fixed component -->
+  <div id="toc-wrapper">
+    <!-- Button to toggle the aside visibility -->
+    <button id="toggle-aside" aria-label="Toggle Table of Contents">
+      <i id="toggle-icon" class="fas fa-chevron-right"></i>
+    </button>
+
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggleButton = document.getElementById("toggle-aside");
+        const tableOfContents = document.getElementById("table-of-contents");
+        const mainContentWrapper = document.getElementById(
+          "main_content_wrapper_id"
+        );
+
+        toggleButton.addEventListener("click", () => {
+          tableOfContents.classList.toggle("aside-hidden");
+          // This will rotate the icon depending on the TOC state
+          toggleButton.querySelector("#toggle-icon").style.transform =
+            tableOfContents.classList.contains("aside-hidden")
+              ? "rotate(0deg)"
+              : "rotate(180deg)";
+          tableOfContents.classList.toggle("toc-hidden-border");
+          mainContentWrapper.classList.toggle(
+            "main_content_wrapper_margin_left"
+          );
+        });
+      });
+    </script>
+  </div>
+
+  <!--- Overwritten by script to populate the TOC -->
+  <div id="toc-override"></div>
+</aside>
+
+<style>
+  li {
+    margin-left: calc(var(--level, 1) * 1em);
+  }
+
+  #toc-wrapper {
+    position: relative;
+  }
+
+  /* Class to hide the aside */
+  .aside-hidden {
+    transform: translateX(-100%); /* Adjust translateX value as needed */
+  }
+
+  #toc-override {
+  }
+
+  .toc {
+    padding: 0 1em;
+    border-right: 1px solid #ccc;
+  }
+
+  .toc-hidden-border {
+    border-right: none; /* Hide the border */
+  }
+
+  @media screen and (min-width: 1025px) {
+    .toc {
+      overflow: auto;
+      width: var(--nav-width);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      padding: unset;
+      margin-left: var(--nav-margin-l);
+    }
+  }
+
+  /* Style for the toggle button */
+  #toggle-aside {
+    cursor: pointer;
+    /* Other styling for the button */
+    position: absolute;
+    top: 1em; /* Position from the top */
+    right: 0;
+    z-index: 2;
+  }
+
+  /* Icon rotation */
+  #toggle-icon {
+    /* Your existing styles */
+    transform: rotate(-180deg);
+  }
+
+  /* When the TOC is closed, we want to move the button to the far left */
+  .aside-hidden #toggle-aside {
+    right: 0; /* Adjust as necessary to align the button with the screen edge */
+  }
+
+  /* Rotate the icon based on the TOC visibility */
+  #toggle-icon {
+    transition: transform 0.3s; /* Smooth rotation */
+  }
+</style>
+
+<style is:global>
+  .toc ul {
+    padding-left: 1em;
+  }
+</style>
+
+<script is:inline>
+const toc_items = retrieveTOC();
+console.log("toc_items", toc_items);
+
+// update the TOC.
+const toc = document.getElementById("toc-override");
+if (!toc) {
+  console.log("toc not found");
+} else {
+  toc.innerHTML = "";
+  const h2 = document.createElement("h2");
+  h2.textContent = "Contents";
+  toc.appendChild(h2);
+
+  const nav = document.createElement("nav");
+  toc.appendChild(nav);
+
+  const ul = document.createElement("ul");
+  nav.appendChild(ul);
+
+  // An item with level `n` can find its parent at index `n-2`.
+  var item_parents = [ul];
+  toc_items.forEach((item) => {
+    const parent_idx = item.level - 2;
+
+    // If `parent_idx` is not pointing to the last element in `item_parents`,
+    // and there are more items in that list, we need to remove elements until
+    // `parent_idx` is pointing to the last element.
+    while (parent_idx < item_parents.length - 1) {
+      item_parents.pop();
+    }
+
+    // On the other hand, if `parent_idx` is pointing beyond the last element,
+    // we need to create parents until `parent_idx` is pointing to the last element.
+    if (parent_idx > item_parents.length - 1) {
+      for (var i = item_parents.length; i <= parent_idx; i++) {
+        const ul = document.createElement("ul");
+        item_parents[i - 1].appendChild(ul);
+        item_parents.push(ul);
+      }
+    }
+
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#${item.text}">${item.text}</a>`;
+
+    item_parents[parent_idx].appendChild(li);
+  });
+}
+</script>

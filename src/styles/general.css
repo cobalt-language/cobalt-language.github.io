@@ -1,0 +1,92 @@
+code {
+    background: rgba(var(--accent-light), 12%);
+    color: rgb(var(--accent-light));
+    border-radius: 4px;
+    padding: 0.3em 0.4em;
+}
+
+pre {
+  counter-reset: line;
+  margin-top: 0;
+}
+
+pre .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  padding-right: 1em;
+  width: 2em;
+  text-align: right;
+  color: #999;
+}
+
+.h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.5em;
+  margin: 0.83em 0;
+  font-weight: bold;
+}
+
+.h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+  font-weight: bold;
+}
+
+.h4 {
+  font-size: 1em;
+  margin: 1.33em 0;
+  font-weight: bold;
+}
+
+.h5 {
+  font-size: 0.83em;
+  margin: 1.67em 0;
+  font-weight: bold;
+}
+
+.h6 {
+  font-size: 0.67em;
+  margin: 2.33em 0;
+  font-weight: bold;
+}
+
+/* Style for the toggle button */
+#toggle-aside {
+  cursor: pointer;
+  /* Other styling for the button */
+  position: absolute;
+  top: 0;       /* Position from the top */
+  right: 0;     /* Position from the right */
+}
+
+a, a:visited {
+  color: rgb(var(--accent-light));
+}
+
+.main_content_wrapper {
+  width: 100%;
+}
+
+.main_content_wrapper_margin_left {
+  margin-left: calc(var(--nav-width) + var(--nav-margin-l));
+}
+
+.main_content {
+  max-width: 60em;
+  margin: auto;
+  padding: 0 1em;
+}
+
+.container {
+  display: flex; /* Use flexbox for layout */
+  min-height: 100vh; /* Take the full viewport height */
+  height: auto;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}

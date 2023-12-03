@@ -1,0 +1,1109 @@
+---
+import InlineCode from "./InlineCode.astro";
+import BlockCode from "./BlockCode.astro";
+import Heading from "./Heading.astro";
+---
+
+<h1>Cobalt Language Reference</h1>
+
+<Heading level={2} toc_text="Comments">Comments</Heading>
+<p>
+  Cobalt uses <code>#</code> for comments. Multiline comments start with
+  <code>#</code> and at least one <code>=</code>. They end with at least the
+  same number of <code>=</code>s.
+  <BlockCode
+    title="comment_syntax.co"
+    src={String.raw`#=
+This is a multi-line comment.
+=#
+
+# This is a single-line comment.`}
+  />
+</p>
+
+<Heading level={3} toc_text="Multi-line comments">Multi-line comments</Heading>
+<p>
+  The syntax for a multi-line comment is:
+  <BlockCode
+    title="multiline_comment_syntax.co"
+    src={String.raw`#=
+This is a multi-line comment.
+=#`}
+  />
+</p>
+
+<p>
+  You can close a multi-line comment with the same or more <InlineCode
+    src="="
+  />s than you started with, but not less.
+  <BlockCode
+    title="close_multiline_comment.co"
+    src={String.raw`#===
+These won't close the comment:
+=#
+==#
+But this will:
+=======#`}
+  />
+</p>
+
+<p>
+  Multi-line comments can't be nested:
+  <BlockCode
+    title="multiline_no_nesting.co"
+    src={String.raw`#==
+There is no problem with writing 
+#========= yo! =#
+even though it is an invalid multiline comment, since the 
+parser does not treat it as a comment (since it is contained
+within a comment).
+==#`}
+  />
+</p>
+
+<p>
+  The parser is greedy on <InlineCode src="=" />s:
+  <BlockCode
+    title="multiline_greedy.co"
+    src={String.raw`#===#
+...
+===#`}
+  />
+   In line 1, the parser takes <code>#===</code> as the comment start, and <code
+    >#</code
+  > as the next character. It does not, for example, see it as a comment start (<code
+    >#=</code
+  >) followed by a comment end (<code>==#</code>).
+</p>
+
+<Heading level={2} toc_text="Built-in types">Built-in types</Heading>
+
+<Heading level={3} toc_text="Numbers">Numbers</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>{String.raw`i{bits}`}</code></td>
+        <td>signed integer with specified bits</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`isize`}</code></td>
+        <td>signed integer with same bits as a pointer</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`u{bits}`}</code></td>
+        <td>unsigned integer with specified bits</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`usize`}</code></td>
+        <td>unsigned integer with same bits as a pointer</td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`f{16|32|64|128}`}</code></td>
+        <td>floating-point number with specified bits</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  <code>bits</code> is any positive integer less that 65,536. Typically you want
+  to stick to a power of 2, and are probably good with using 32 or 64.
+</p>
+
+<Heading level={3} toc_text="References and pointers">
+  References and pointers
+</Heading>
+<p>
+  The primary difference between a reference and a pointer is that a pointer
+  needs to be dereferenced in order to act like the underlying value, while a
+  reference does not. For instance, suppose there is a type <code>T</code> with
+  method <code>foo()</code>. Here's how you would call this method with a
+  reference and with a pointer:
+</p>
+<BlockCode
+  title="call_with_ref_ptr.co"
+  src={String.raw`# Suppose x_ref has type &T. 
+x_ref.foo();
+
+# Suppose x_ptr has type *T.
+(*x_ptr).foo();`}
+/>
+<p>
+  The underlying concept in play here is <i>decaying</i>. In this context, a
+  reference <code>&T</code> "decays" into <code>T</code>. You can think of this
+  as an implicit conversion.
+</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>*T</code></td>
+        <td
+          >pointer to type <code>T</code>: cannot change the memory being
+          pointed to</td
+        >
+      </tr>
+      <tr>
+        <td><code>*mut T</code></td>
+        <td
+          >mutable pointer to type <code>T</code>: can change the memory being
+          pointed to</td
+        >
+      </tr>
+      <tr>
+        <td><code>&T</code></td>
+        <td
+          >reference to type <code>T</code>: cannot change the underlying
+          instance</td
+        >
+      </tr>
+      <tr>
+        <td><code>&mut T</code></td>
+        <td
+          >mutable reference to type <code>T</code>: can change the underlying
+          instance</td
+        >
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Heading level={3} toc_text="Arrays">Arrays</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>T[]</code></td>
+        <td>unsized array of objects of type <code>T</code></td>
+      </tr>
+      <tr>
+        <td><code>{String.raw`T[{size}]`}</code></td>
+        <td>
+          sized array (with size <code>size</code>) of objects of type
+          <code>T</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<Heading level={4} toc_text="Unsized">Unsized</Heading>
+<p>
+  For unsized arrays, there are two things to note:
+  <ul>
+    <li><code>T[]</code> must be behind a reference.</li>
+    <li>The size is stored with the data as a fat pointer.</li>
+  </ul>
+   Practically, this means you will not use variables of type <code>T[]</code>
+   directly, but rather use references <code>&T[]</code> or
+  <code>&mut T[]</code>. In this case, the reference can be thought of as a fat
+  pointer which stores the size of the array. In particular, you don't need to
+  keep track of the array size in a different variable.
+</p>
+<Heading level={4} toc_text="Sized">Sized</Heading>
+<p>For sized arrays, <code>size</code> must be known at compile time.</p>
+
+<Heading level={3} toc_text="Tuples">Tuples</Heading>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>(T, U, V, ...)</code></td>
+        <td>
+          tuple whose first element is type <code>T</code>, second is type
+          <code>U</code>, etc.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>You can access the members with parentheses:</p>
+<BlockCode
+  title="tuple_access.co"
+  src={String.raw`let x: (i32, f32) = (3, 3.1415);
+let x_int = x(0);
+let x_float = x(1);`}
+/>
+
+<Heading level={3} toc_text="Structs">Structs</Heading>
+
+<Heading level={4} toc_text="Literals">Literals</Heading>
+<p>The simplest way to create a struct is to use literal notation.</p>
+<BlockCode
+  title="struct_literal_syntax.co"
+  src={String.raw`let monster = { alive: true, health: 97i32, };`}
+/>
+<p>
+  In the above example, <code>monster</code> has type <code
+    >{String.raw`{alive: bool, health: i32}`}</code
+  >.
+</p>
+
+<p>You can access fields using dot notation:</p>
+<BlockCode
+  title="struct_access_syntax.co"
+  src={String.raw`let health = monster.health;`}
+/>
+
+<Heading level={4} toc_text="Nominals">Nominals</Heading>
+<p>Structs can be named in the following way:</p>
+<BlockCode
+  title="struct named syntax"
+  src={String.raw`type <NAME> = {
+  <FIELD_NAME>: <FIELD_TYPE>,
+  ...
+};`}
+/>
+<p>
+  To explicitly construct this, you can use a bitcast, or define a "constructor"
+  which itself uses a bitcast.
+</p>
+<BlockCode
+  title="struct_bitcast_syntax.co"
+  src={String.raw`type MyStruct = {
+  field1: bool,
+  field2: i32,
+};
+
+fn main(): i32 = {
+  let y = { field1: false, field2: 3i32 } :? MyStruct;
+  # ...
+};`}
+/>
+<p>
+  However, keep in mind that naming a type like this obfuscates the base type.
+  What this means practically is that, to access the fields of a named struct,
+  you must either cast it to it's base type beforehand or mark it with the
+  <code>@transparent</code> annotation:
+</p>
+<BlockCode
+  title="struct_transparent_syntax.co"
+  src={String.raw`@transparent
+type MyStruct = {
+  field1: bool,
+  field2: i32,
+};
+
+fn main(): i32 = {
+  let y = { field1: false, field2: 3i32 } :? MyStruct;
+
+  y.field2
+};`}
+/>
+
+<Heading level={3} toc_text="Symbol types">Symbol types</Heading>
+
+<p>
+  Symbol types are ZSTs (zero-sized types). They are defined "in place", meaning
+  you don't need to have defined them somewhere else to use them. The syntax is
+  as follows:
+</p>
+
+<BlockCode
+  title="symbol_type_syntax.co"
+  src={String.raw`# Syntax 1: a $ followed by any identifier:
+$foo
+
+# Syntax 2: a $ followed by a double-quote string literal:
+$"a\nb"`}
+/>
+
+<Heading level={2} toc_text="Custom types">Custom types</Heading>
+
+<p>
+  Types are defined using the <code>type</code>keyword. The simplest form is
+  this:
+</p>
+<BlockCode title="type_syntax.co" src={String.raw`type <NAME> = <VAL>;`} />
+<p>
+  where
+  <ul>
+    <li>
+      <code>{"<NAME>"}</code> is the name of the type you want to define.
+    </li>
+
+    <li>
+      <code>{"<VAL>"}</code> is the underlying representation.
+    </li>
+  </ul>
+   This simple form is most useful for type-aliasing; i.e. providing a name for
+  a preexisting type, potentially to hide the underlying properties of the
+  preexisting type from users. For example,
+</p>
+<BlockCode
+  title="opaque_ptr.co"
+  src={String.raw`type opaque_ptr = *null;`}
+/>
+
+<Heading level={3} toc_text="Construction">Construction</Heading>
+<p>If you define a type like</p>
+<BlockCode title="type_syntax.co" src={String.raw`type <NAME> = <VAL>;`} />
+<p>
+  and you are able to construct the type <code>{"<VAL>"}</code>, then you can
+  cast the type <code>{"<VAL>"}</code> into the type <code>{"<NAME>"}</code>
+   using a bit cast, e.g.
+</p>
+<BlockCode
+  title="bitcast_examples.co"
+  src={String.raw`type MyInt = i32;
+
+# Works
+let x = 3i32;
+let my_x = x :? MyInt;
+
+# Also works
+let my_y = 3i32 :? MyInt;
+
+# Doesn't work-- you need to explicitly bit cast
+let z = 3i32;
+let my_z: MyInt = z;`}
+/>
+<p>
+  You don't have to do this every time you construct your type. You can provide
+  a <i>method</i> for construction. We'll discuss methods more below.
+</p>
+
+<Heading level={3} toc_text="Fields">Fields</Heading>
+<p>
+  Every type has a default field <code>__base</code> (note there are two
+  underscores) which accesses the base type.
+</p>
+<BlockCode
+  title="base_field.co"
+  src={String.raw`type MyInt = i32;
+
+fn main(): i32 {
+    let x1 = 3i32 :? MyInt;
+    let x2 = 3i32 :? MyInt;
+
+    # Two ways to access the base type.
+    let y1 = x1 :? i32;
+    let y2 = x2.__base;
+
+    0
+};`}
+/>
+
+<Heading level={3} toc_text="Methods">Methods</Heading>
+<p>Methods are defined in the following way:</p>
+<BlockCode
+  title="method syntax"
+  src={String.raw`type <NAME> = <VAL> :: {
+  # Methods go here.
+};`}
+/>
+<p>To define a method on an instance, use the <code>self_t</code> type:</p>
+<BlockCode
+  title="method syntax with self"
+  src={String.raw`type <NAME> = <VAL> :: {
+  @method
+  fn immut_method(s: &self_t);
+
+  @method
+  fn mut_method(s: &mut self_t);
+
+  @method
+  fn move_method(s: self_t);
+};`}
+/>
+<p>You can refer to the type <code>{"<VAL>"}</code> as <code>base_t</code>:</p>
+<BlockCode
+  title="method syntax with self"
+  src={String.raw`type <NAME> = <VAL> :: {
+  @getter 
+  fn val(self: self_t): base_t = self :? base_t;
+};`}
+/>
+<p>Methods are often decorated with the following annotations:</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Annotation</th>
+        <th>Behavior</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>@method</code></td>
+        <td> General purpose, allows method to be called.</td>
+      </tr>
+      <tr>
+        <td><code>@getter</code></td>
+        <td>Allows the method to be called like a field.</td>
+      </tr>
+      <tr>
+        <td><code>@op(drop)</code></td>
+        <td>Implement a destructor (see below).</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<BlockCode
+  title="getter_example.co"
+  src={String.raw`@C(extern)
+fn puts(str: *u8);
+
+type MyType = (i32, f32) :: {
+    @getter
+    @inline
+    fn x(s: &self_t): i32 = {
+        s.__base(0)
+    };
+};
+
+fn main(): i32 = {
+    let my_type = (3i32, 9.9f32) :? MyType;
+    if (my_type.x == 3i32) {  # Note we don't use () to call a getter.
+        puts("Success");
+    } else {
+        puts("Failure");
+    };
+
+    0
+};`}
+/>
+
+<Heading level={3} toc_text="Destructors">Destructors</Heading>
+<p>
+  A destructor is called when (after) an instance goes out of scope, and is
+  responsible for cleaning up memory and closing resources associated with the
+  instance. For basic types and their derivatives, you do not need to worry
+  about implementing this yourself.
+</p>
+<p>
+  Destructors are implemented as methods annotated with <code>@op(drop)</code>
+   and accepting single <code>&mut self_t</code> parameter. The return type is
+  null.
+</p>
+<BlockCode
+  title="destructor syntax"
+  src={String.raw`type <NAME> = <VAL> :: {
+  @op(drop)
+  fn my_custom_destructor(s: &mut self) = {
+      # Clean up here.
+  };
+};`}
+/>
+
+<Heading level={2} toc_text="Variables">Variables</Heading>
+<p>
+  Variables are defined with the <InlineCode src="let" /> keyword. Types are
+  deduced, but can also be manually specified:
+  <BlockCode
+    title="var_def_syntax.co"
+    src={[
+      `let x = 3i32;       # deduced type`,
+      `let y: i32 = 4i32;  # explicit type`,
+    ].join("\n")}
+  />
+</p>
+<p>
+  Mutable variables are marked by the <InlineCode src="mut" /> keyword:
+  <BlockCode
+    title="mut_var_syntax.co"
+    src={[`let mut x = 3i32;`, `x = 5i32;`].join("\n")}
+  />
+</p>
+<p>
+  Variables which are known at compile time can be specified using the
+  <InlineCode src="const" /> keyword:
+  <BlockCode title="const_var_syntax.co" src="const x = 5i32;" />
+   You do not include the <InlineCode src="let" /> keyword.
+</p>
+
+<Heading level={2} toc_text="Blocks and groupings">
+  Blocks and groupings
+</Heading>
+<p>
+  Blocks (<code>{"{}"}</code>) and groupings (<code>()</code>) can sometimes be
+  used interchangeably, but differ in subtle ways.
+</p>
+
+<Heading level={3} toc_text="Blocks">Blocks</Heading>
+<p>
+  <i>Blocks</i> contain <i>statements</i> and evaluate to a value (of some
+  type). They are delimited by braces (<code>{"{}"}</code>). Blocks are
+  themselves expressions. In particular, you may find that Cobalt requires
+  semicolons after blocks where other languages do not.
+</p>
+<BlockCode
+  title="block_syntax.co"
+  src={String.raw`# This is a block:
+{
+  let x = 1;
+
+  # This is a block within a block:
+  {
+      let y = 2;    
+  };
+
+  let z = 3;
+};  # semicolon!`}
+/>
+<p>
+  Blocks are expressions with the same value as the last statement contained
+  within them. In the above example, the last statement in the outermost block
+  is <code>let z = 3;</code>. This is a non-expression statement. Recall that
+  non-expression statements have value <code>null</code> and type
+  <code>null</code>. On the other hand, if the last statement in the block is an
+  expression, then the block is also an expression. In that case, the value of
+  the block will be the value of the last expression contained within it (and
+  the type of the value will be the type of the value of the last expression
+  contained within it).
+</p>
+<BlockCode
+  title="block_as_expr.co"
+  src={String.raw`# x has type/value null
+let x = {
+  let y = 1;
+};
+
+# z has type i32 and value 5 
+let z = {
+  2i32 + 3i32 # uses i32 literal syntax 
+};`}
+/>
+<p>
+  An important property of blocks is that they introduce a new scope. This is
+  similar to the scoping behavior in other languages.
+</p>
+<BlockCode
+  title="block_scope.co"
+  src={String.raw`let x = 1;
+
+let y = {
+  let z = 2;
+
+  # x is accessible in the inner scope
+  z + x
+};
+
+# z is not accessible in the outer scope`}
+/>
+
+<Heading level={3} toc_text="Groupings">Groupings</Heading>
+<p>
+  <i>Groupings</i> contain expressions, and are themselves expressions. Recall
+  that every expression is a statement, but not every statement is an
+  expression. In particular, groupings cannot contain non-expression statements.
+</p>
+<p>
+  Groupings are delimited by parenthesis (<code>()</code>).
+</p>
+<BlockCode
+  title="groupings_ex.co"
+  src={String.raw`# x has type i32 and value 2
+let x = (
+  2i32
+);
+
+# a has type/value null
+let a = (
+  1 + 1;
+);
+
+# y has type i32 and value 2
+let y = (
+  (
+      2i32
+  )
+);
+
+# b has type/value null
+let b = (
+  # the value of an expression ending with a semicolon is null
+  (
+      2i32
+  );
+);`}
+/>
+<p>This, however, is not valid (compare with blocks):</p>
+<BlockCode
+  title="invalid group"
+  src={String.raw`# Compiler error!
+let x = (
+  let y = 1;
+);`}
+/>
+<p>In some cases, though, groupings and blocks can be used interchangeably.</p>
+<BlockCode
+  title="group_block.co"
+  src={String.raw`# x has type i32 and value 2 
+let x = {
+  2i32  
+};
+
+# y has type i32 and value 2 
+let y = (
+  2i32
+);`}
+/>
+<p>
+  If a grouping contains no expressions, then it is an expression which evalutes
+  to <code>null</code>.
+</p>
+<BlockCode
+  title="empty_group.co"
+  src={String.raw`# x has type/value null
+let x = ();`}
+/>
+
+<Heading level={2} toc_text="Functions">Functions</Heading>
+
+<p>Functions are defined as</p>
+<BlockCode
+  title="function syntax"
+  src={String.raw`fn <NAME>(<PARAM>*): <TYPE> = <EXPR>`}
+/>
+<p>
+  where
+  <ul>
+    <li><code>{"<NAME>"}</code> is the name of the function.</li>
+    <li>
+      <code>{"<PARAM>"}</code> is a function parameter. These are described in
+      more detail below. By <code>{"<PARAM>*"}</code> we mean that a function
+      may have zero or more parameters. Each parameter must be separated by a
+      comma.
+    </li>
+    <li>
+      <code>{"<TYPE>"}</code> is the return type of the function. If none is
+      specified, don't include the colon : and the return type will be assumed
+      to be <code>null</code>.
+    </li>
+    <li>
+      <code>{"<EXPR>"}</code> is an expression. Typically, this would be a block
+      (<code>{"{..}"}</code>). If nothing is specified, this will default to
+      <code>null</code>.
+    </li>
+  </ul>
+</p>
+
+<Heading level={3} toc_text="Parameters">Parameters</Heading>
+
+<p>Each parameter has the form</p>
+<BlockCode
+  title="function parameter syntax"
+  src={String.raw`[const|mut] <NAME>: <TYPE> [= <DEFAULT VAL>]`}
+/>
+<p>
+  where
+  <ul>
+    <li>
+      <code>[const|mut]</code> means that, optionally, you can write const or
+      mut before the type. const means the parameter is known at compile time.
+      mut means the function can modify the parameter. If neither is specified,
+      then you cannot change the value of the parameter.
+    </li>
+    <li>
+      <code>{"<NAME>"}</code> is the name of the parameter, which can be used
+      inside the function.
+    </li>
+    <li><code>{"<TYPE>"}</code> is the type of the parameter.</li>
+    <li>
+      <code>{"[= <DEFAULT VAL>]"}</code> means that, optionally, you can provide
+      a default value to the parameter.
+    </li>
+  </ul>
+</p>
+<p>
+  Note that having a reference parameter marked as <code>mut</code> is not the
+  same as that parameter having type <code>&mut Ty</code>. For instance, the
+  paramaters <code>mut arg: &i32</code> and
+  <code>arg: &mut i32</code> are not the same:
+  <ul>
+    <li>
+      In the first case, <code>mut arg: &i32</code>, you can reassign what is
+      being referenced by arg but cannot mutate the underlying object.
+    </li>
+    <li>
+      In the second case, <code>arg: &mut i32</code>, you cannot reassign what
+      is being referenced, but can mutate the underlying object.
+    </li>
+  </ul>
+</p>
+
+<Heading level={4} toc_text="Reference parameters">
+  Reference parameters
+</Heading>
+
+<p>
+  To call a function with a reference parameter, you can either provide a
+  reference or a value. If you provide a value then it will be automatically
+  converted into a reference.
+</p>
+<BlockCode
+  title="reference_param.co"
+  src={String.raw`fn foo(x: &i32);
+
+fn bar(y: &i32) = {
+  # Pass a reference parameter directly.
+  foo(y);
+};
+
+fn main(): i32 = {
+  let x = 3i32;
+
+  # Even though we pass in a value, since the function expects a reference it 
+  # will convert it to a reference for us.
+  foo(x);
+
+  0
+}`}
+/>
+
+<Heading level={3} toc_text="Annotations">Annotations</Heading>
+
+<p>
+  Annotations can be placed above function definitions. The following options
+  are available:
+</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Annotation</th>
+        <th>Behavior</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>@link(type)</code></td>
+        <td>set linkage</td>
+      </tr>
+      <tr>
+        <td><code>@linkas(name)</code></td>
+        <td>set link name</td>
+      </tr>
+      <tr>
+        <td><code>@cconv(convention)</code></td>
+        <td>set calling convention. can either be name or id</td>
+      </tr>
+      <tr>
+        <td><code>@extern(cconv (optional))</code></td>
+        <td>set function as externally defined</td>
+      </tr>
+      <tr>
+        <td><code>@inline(always | never)</code></td>
+        <td>inline function. may or may not actually be done</td>
+      </tr>
+      <tr>
+        <td><code>@C(extern (optional))</code></td>
+        <td>unmangle link name and use C calling convention</td>
+      </tr>
+      <tr>
+        <td><code>@target(glob)</code></td>
+        <td>only evaluate if the target matches the glob</td>
+      </tr>
+      <tr>
+        <td><code>@export(true | false (optional))</code></td>
+        <td>set module export, defaults to true</td>
+      </tr>
+      <tr>
+        <td><code>@private(true | false (optional))</code></td>
+        <td>does the opposite of <code>@export</code></td>
+      </tr>
+      <tr>
+        <td><code>@method</code> (types only)</td>
+        <td>mark a function as a method</td>
+      </tr>
+      <tr>
+        <td><code>@getter</code> (types only)</td>
+        <td>mark a function as a getter</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  For example, we can declare and use a function from <code>libc</code> as
+  follows:
+</p>
+<BlockCode
+  title="fn_annotation_example.co"
+  src={String.raw`# Note both return type and body are inferred to be null.
+@C(extern) fn puts(str: *u8); 
+
+# Note the allowed paramaters to main().
+fn main(argc: i32, argv: **u8): i32 = {
+  puts("Hello, World!");
+  0
+};`}
+/>
+
+<Heading level={3} toc_text="Miscellaneous">Miscellaneous</Heading>
+
+<p>
+  <ul>
+    <li>
+      If no body to a function is provided (and it is not <code>extern</code>)
+      then the body defaults to <code>null</code>. In particular, the function
+      can still be called.
+    </li>
+  </ul>
+</p>
+
+<Heading level={2} toc_text="Operators">Operators</Heading>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Syntax</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>=</code></td>
+        <td>Ordinary assignment.</td>
+      </tr>
+      <tr>
+        <td><code>+=</code></td>
+        <td>Add and assign.</td>
+      </tr>
+      <tr>
+        <td><code>-=</code></td>
+        <td>Subtract and assign.</td>
+      </tr>
+      <tr>
+        <td><code>*=</code></td>
+        <td>Multiply and assign.</td>
+      </tr>
+      <tr>
+        <td><code>/=</code></td>
+        <td>Divide and assign.</td>
+      </tr>
+      <tr>
+        <td><code>%=</code></td>
+        <td>Mod and assign.</td>
+      </tr>
+      <tr>
+        <td><code>&=</code></td>
+        <td>Bit and, and assign.</td>
+      </tr>
+      <tr>
+        <td><code>|=</code></td>
+        <td>Bit or, and assign.</td>
+      </tr>
+      <tr>
+        <td><code>^=</code></td>
+        <td>Bit XOR and assign.</td>
+      </tr>
+      <tr>
+        <td><code>{"<<="}</code></td>
+        <td>Bit shift left and assign.</td>
+      </tr>
+      <tr>
+        <td><code>{">>="}</code></td>
+        <td>Bit shift right and assign.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Heading level={3} toc_text="Bit cast">Bit cast</Heading>
+
+<p>
+  The bitcast operator (<code>:?</code>) results in a move:
+</p>
+<BlockCode
+  title="bitcast_moves.co"
+  src={String.raw`type MyInt1 = i32;
+type MyInt2 = MyInt1;
+
+fn main() = {
+  let x = 3i32 :? MyInt1;
+  let y = x :? MyInt2;  # x moved here.
+
+  # x is no longer valid.
+
+  0
+};`}
+/>
+
+<Heading level={2} toc_text="Literals">Literals</Heading>
+
+<Heading level={3} toc_text="Strings">Strings</Heading>
+
+<p>String literals can be specified with double quotations:</p>
+<BlockCode
+  title="bitcast_moves.co"
+  src={String.raw`let s = "Hello, world!";`}
+/>
+<p>
+  A string literal can be immediately followed by <code>c</code>. This used to
+  be required to pass string literals as parameters to (<code>extern</code>)
+  functions expected C-style strings, but is no longer necessary. This is
+  because string literals are automatically appended by a null terminator.
+  However, by default, this does not affect the length of the string. If you
+  include the c suffix, it will:
+</p>
+<BlockCode
+  title="c_string_len.co"
+  src={String.raw`# length is 2
+let s1 = "hi";
+
+# length is 3
+let s1 = "hi"c;`}
+/>
+
+<Heading level={3} toc_text="Integers">Integers</Heading>
+
+<p>
+  Integers can be specified with suffixes beginning with <code>i</code> or
+  <code>u</code>, followed by the number of bits. If <code>size</code> is
+  provided instead of a number (positive integer less than 65,536), then the
+  resulting integer will have the same size as a pointer. For example:
+</p>
+<BlockCode
+  title="integer_literals.co"
+  src={String.raw`# signed integer with value 3 with size equal to 32 bits
+let s1 = 3i32;
+
+# unsigned integer of value 3 with size equal to that of a pointer
+let s1 = 3usize;`}
+/>
+<p>If no suffix is provided, the type is inferred.</p>
+
+<Heading level={3} toc_text="Floats">Floats</Heading>
+
+<p>
+  Float literals can be suffixed with a <code>f</code> followed by either
+  <code>16</code>, <code>32</code>, <code>64</code>, or <code>128</code>.
+</p>
+
+<Heading level={2} toc_text="Modules">Modules</Heading>
+
+<p>Modules are a way of giving a scope and namespace to your code.</p>
+
+<Heading level={3} toc_text="Same-file">Same-file</Heading>
+
+<p>The basic syntax is:</p>
+<BlockCode
+  title="module same-file syntax"
+  src={String.raw`module <NAME> {
+  <TOP_LEVEL_DECLARATIONS>+
+};`}
+/>
+<p>
+  Recall that a top level declarations can be functions and variable
+  assignments. For example,
+</p>
+<BlockCode
+  title="module_same_file_example.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+
+  fn my_function(): i32 = {
+      6i32
+  };
+};`}
+/>
+
+<Heading level={3} toc_text="Using it">Using it</Heading>
+<p>To use the things defined in a module, you have a few options.</p>
+<p>
+  If the module is defined in the same file you want to use it, then you can
+  prefix its elements with the module name, kind of like a namespace:
+</p>
+<BlockCode
+  title="module_same_file_usage.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+};
+
+fn foo(): i32 = {
+  MyModule.my_constant
+};`}
+/>
+
+<Heading level={4} toc_text="Imports">Imports</Heading>
+<p>
+  If/when that gets tedious, you can bring the module's contents into the
+  current scope by importing it:
+</p>
+<BlockCode
+  title="module_import_syntax.co"
+  src={String.raw`module MyModule {
+  let my_constant = 3i32;
+  let my_other_constant = 5i32;
+};
+
+import MyModule.*;
+
+fn foo(): i32 = {
+  MyModule.my_constant
+};`}
+/>
+<p>
+  The wildcard <code>*</code> imports all elements of the module. You can import
+  a single item like this:
+</p>
+<BlockCode
+  title="import_single.co"
+  src={String.raw`import MyModule.my_constant;`}
+/>
+<p>or multiple items like this:</p>
+<BlockCode
+  title="import_single.co"
+  src={String.raw`import MyModule.{my_constant, my_other_constant};`}
+/>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+
+  th {
+    font-size: small;
+    font-weight: bold;
+    font-style: italic;
+
+    background-color: var(--table-header-bg);
+    color: #000;
+  }
+
+  table th:first-child {
+    border-radius: 5px 0 0 0;
+  }
+
+  table th:last-child {
+    border-radius: 0 5px 0 0;
+  }
+
+  table td {
+    padding: 3px 20px;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: var(--table-row-alternate-bg);
+  }
+</style>
