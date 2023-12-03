@@ -1,15 +1,151 @@
 ---
 import "../styles/general.css";
-import Line from "./Line.astro";
 
 const { title, src } = Astro.props;
+const KEYWORDS = [
+  "let",
+  "mut",
+  "const",
+  "type",
+  "null",
+  "if",
+  "else",
+  "fn",
+  "module",
+  "import",
+];
+function tokenize(src: string): string[][][] {
+  var out: string[][][] = [];
+  var currentLine: string[][] = [];
+  var last = 0;
+  var i = 0;
+  var start = 0;
+  while (i < src.length) {
+    switch (src[i]) {
+      case "\n":
+        currentLine.push(["code-text", src.substring(last, i)]);
+
+        out.push(currentLine);
+        currentLine = [];
+        i += 1;
+        last = i;
+        break;
+      case "#":
+        start = i;
+        i += 1;
+
+        if (last != start) {
+          currentLine.push(["code-text", src.substring(last, start)]);
+        }
+
+        if (src[i] == "=") {
+          // Multiline comment.
+
+          var equals = 0;
+          while (src[i] == "=") {
+            equals += 1;
+            i += 1;
+          }
+
+          while (i < src.length) {
+            if (src[i] == "\n") {
+              currentLine.push(["code-comment", src.substring(start, i)]);
+              out.push(currentLine);
+              currentLine = [];
+
+              i += 1;
+              start = i;
+            } else if (src[i] == "=") {
+              let count = 0;
+              while (src[i] == "=") {
+                count += 1;
+                i += 1;
+              }
+
+              if (count >= equals && src[i] == "#") {
+                i += 1;
+                break;
+              }
+            } else {
+              i += 1;
+            }
+          }
+
+          currentLine.push(["code-comment", src.substring(start, i)]);
+          last = i;
+        } else {
+          i = src.indexOf("\n", i);
+          if (i == -1) i = src.length;
+
+          currentLine.push(["code-comment", src.substring(start, i)]);
+
+          out.push(currentLine);
+          currentLine = [];
+          i += 1;
+          last = i;
+        }
+        break;
+      case "+":
+      case "-":
+      case "*":
+      case "/":
+      case "%":
+      case "!":
+      case "?":
+      case ":":
+      case "<":
+      case ">;":
+      case "=":
+      case "&":
+      case "|":
+      case "^":
+      case "~":
+        currentLine.push(["code-text", src.substring(last, i)]);
+        currentLine.push(["code-char", src[i++]]);
+        last = i;
+        break;
+      case "@":
+        start = i++;
+        while (
+          src[++i] == "_" ||
+          (src[i] >= "a" && src[i] <= "z") ||
+          (src[i] >= "A" && src[i] <= "Z") ||
+          (src[i] >= "0" && src[i] <= "9")
+        );
+        if (src[i] == "(") {
+          i = src.indexOf(")", i);
+          if (!++i) i = src.length;
+        }
+        currentLine.push(["code-text", src.substring(last, start)]);
+        currentLine.push(["code-ann-intrin", src.substring(start, i)]);
+        last = i;
+        break;
+      default:
+        start = i;
+        while (src[i] >= "a" && src[i] <= "z") ++i; // all keywords are lowercase letters
+        let kw = src.substring(start, i);
+        if (KEYWORDS.includes(kw)) {
+          currentLine.push(["code-text", src.substring(last, start)]);
+          currentLine.push(["code-keyword", kw]);
+
+          last = i;
+        }
+
+        if (i == start) {
+          i += 1;
+        }
+    }
+  }
+  if (last != src.length) currentLine.push(["code-text", src.substring(last)]);
+  out.push(currentLine);
+  return out;
+}
 ---
 
 <figure>
   <figcaption>{title}</figcaption>
-  <pre><code class="block-code">{src.split('\n').map((lineContent: string, _index: number) => (
-    <Line src={lineContent} />
-  ))}</code></pre>
+  <pre><code class="block-code">{tokenize(src).map(line => <span class="line">{line.map(token => <span class={token[0]}>{token[1]}</span>)}
+</span>)}</code></pre>
 </figure>
 
 <style>
@@ -31,5 +167,20 @@ const { title, src } = Astro.props;
 
     background-color: rgb(var(--accent-light));
     color: #000;
+  }
+
+  .code-keyword {
+    font-weight: bold;
+  }
+
+  .code-text {
+  }
+
+  .code-comment {
+    color: var(--CODE-CS-comment);
+  }
+
+  .code-ann-intrin {
+    color: var(--CODE-CS-annotation);
   }
 </style>
