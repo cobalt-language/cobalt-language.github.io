@@ -5,7 +5,7 @@ const { frontmatter } = Astro.props;
 
 <BaseLayout pageTitle={frontmatter.title}>
   <div slot="before-header">
-    <a class="back-button" href="../blog">Back to Posts</a>
+    <a class="back-button" href="../../blog">Back to Posts</a>
   </div>
   <p>Written by: {frontmatter.author}</p>
   <slot />
