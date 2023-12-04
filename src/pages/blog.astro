@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BlogPost from "../components/BlogPost.astro";
 
-const allPosts = await getCollection("posts");
+const allPosts = await getCollection("blog");
 ---
 
 <BaseLayout pageTitle="Cobalt Blog">
@@ -11,7 +11,7 @@ const allPosts = await getCollection("posts");
   <ul>
     {
       allPosts.sort().reverse().map((post) => (
-        <BlogPost url={"/posts/" + post.slug} title={post.data.title} />
+        <BlogPost url={"/blog/" + post.slug} title={post.data.title} />
       ))
     }
   </ul>
